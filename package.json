@@ -1,7 +1,7 @@
 {
   "name": "bitpay-rates",
   "version": "0.0.1",
-  "description": "A node wrapper for Bitpay Rates API",
+  "description": "A NodeJS wrapper for Bitpay Rates API",
   "main": "./lib/rates.js",
   "repository": {
     "type": "git",
