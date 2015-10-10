@@ -5,13 +5,26 @@ This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
 ## Synopsis
 
+Getting a rate
+
 ``` javascript
 var bitpayRates = require('bitpay-rates');
 var code = 'ARS'; // see list of codes
 
-bitpayRates.rates(code, function (err, res) {
+bitpayRates.get(code, function (err, res) {
   console.log('Error:', err);
   console.log('Rate:', res);
+});
+```
+
+Getting all the rates
+
+``` javascript
+var bitpayRates = require('bitpay-rates');
+
+bitpayRates.get(function (err, res) {
+  console.log('Error:', err);
+  console.log('Rates:', res);
 });
 ```
 

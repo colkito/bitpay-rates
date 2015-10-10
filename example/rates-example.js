@@ -2,7 +2,12 @@
 
 var bitpayRates = require('../lib/rates');
 
-bitpayRates.rates('ARS', function (err, res) {
+bitpayRates.get('ARS', function (err, res) {
   console.log('Error:', err);
   console.log('Rate:', res);
+});
+
+bitpayRates.get(function (err, res) {
+  console.log('Error:', err);
+  console.log('Rates:', res);
 });
