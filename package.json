@@ -1,0 +1,26 @@
+{
+  "name": "bitpay-rates",
+  "version": "0.0.1",
+  "description": "A node wrapper for Bitpay Rates API",
+  "main": "./lib/rates.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colkito/bitpay-rates.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "bitpay",
+    "rates",
+    "countries",
+    "price"
+  ],
+  "author": "Mario Colque <colquemario@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/colkito/bitpay-rates/issues"
+  },
+  "homepage": "https://github.com/colkito/bitpay-rates#readme",
+  "dependencies": {
+    "jsonquest": "^0.2.3"
+  }
+}
