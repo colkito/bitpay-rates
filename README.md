@@ -1,6 +1,8 @@
 bitpay-rates
 ============
 
+[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates)
+
 This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
 ## Synopsis
