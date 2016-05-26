@@ -192,3 +192,7 @@ The complete list of codes:
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
+
+## Support
+Hey dude! Let me go out for a couple of :beers:!
+[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)
