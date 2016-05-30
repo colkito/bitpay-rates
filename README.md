@@ -1,8 +1,6 @@
 bitpay-rates
 ============
 
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates) [![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)
-
 This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
 ## Synopsis
@@ -192,8 +190,4 @@ The complete list of codes:
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
-
-## Support
-Hey dude! Let me go out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)
+- 
