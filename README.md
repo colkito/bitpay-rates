@@ -1,6 +1,8 @@
 bitpay-rates
 ============
 
+[![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+
 This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
 ## Synopsis
@@ -8,24 +10,24 @@ This is a simple implementation of the Bitpay Rates API, written for nodejs.
 Getting a rate
 
 ``` javascript
-var bitpayRates = require('bitpay-rates');
-var code = 'ARS'; // see list of codes
+const bitpayRates = require('bitpay-rates')
+const code = 'ARS' // see list of codes
 
-bitpayRates.get(code, function (err, res) {
-  console.log('Error:', err);
-  console.log('Rate:', res);
-});
+bitpayRates.get(code, (err, res) => {
+  console.log('Error:', err)
+  console.log('Rate:', res)
+})
 ```
 
 Getting all the rates
 
 ``` javascript
-var bitpayRates = require('bitpay-rates');
+const bitpayRates = require('bitpay-rates')
 
-bitpayRates.get(function (err, res) {
-  console.log('Error:', err);
-  console.log('Rates:', res);
-});
+bitpayRates.get((err, res) => {
+  console.log('Error:', err)
+  console.log('Rates:', res)
+})
 ```
 
 ## Codes
@@ -72,6 +74,7 @@ The complete list of codes:
 - CLP (Chilean Peso)
 - COP (Colombian Peso)
 - CRC (Costa Rican Colón)
+- CUP (Cuban Peso)
 - CVE (Cape Verdean Escudo)
 - CZK (Czech Koruna)
 - DJF (Djiboutian Franc)
@@ -99,6 +102,7 @@ The complete list of codes:
 - ILS (Israeli Shekel)
 - INR (Indian Rupee)
 - IQD (Iraqi Dinar)
+- IRR (Iranian Rial)
 - ISK (Icelandic Króna)
 - JEP (Jersey Pound)
 - JMD (Jamaican Dollar)
@@ -107,6 +111,7 @@ The complete list of codes:
 - KGS (Kyrgystani Som)
 - KHR (Cambodian Riel)
 - KMF (Comorian Franc)
+- KPW (North Korean Won)
 - KWD (Kuwaiti Dinar)
 - KYD (Cayman Islands Dollar)
 - KZT (Kazakhstani Tenge)
@@ -191,10 +196,6 @@ The complete list of codes:
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
 
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)  [![Beerpay](https://beerpay.io/img/badges/make-wish-square.svg)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
 ## Support on Beerpay
 Hey dude! Help me out for a couple of :beers:!
 
