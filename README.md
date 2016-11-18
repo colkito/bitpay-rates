@@ -7,7 +7,7 @@ bitpay-rates
 
 This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
-## Synopsis
+## 🤓 Synopsis
 
 Getting a rate
 
@@ -32,7 +32,7 @@ bitpayRates.get((err, res) => {
 })
 ```
 
-## Codes
+## 🌎 Codes
 The complete list of codes:
 
 - BTC (Bitcoin)
