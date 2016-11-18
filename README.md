@@ -3,7 +3,7 @@ bitpay-rates
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates)
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates)
+[![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
 
 This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
