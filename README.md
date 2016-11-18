@@ -7,7 +7,9 @@ bitpay-rates
 
 This is a simple implementation of the Bitpay Rates API, written for nodejs.
 
-## 🤓 Synopsis
+## 🤓 Usage
+
+Install using `$ yarn add bitpay-rates` or `$ npm i -g bitpay-rates`
 
 Getting a rate
 
