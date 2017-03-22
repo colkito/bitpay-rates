@@ -6,11 +6,12 @@ bitpay-rates
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates)
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
 
-This is a simple implementation of the [Bitpay](https://bitpay.com) Rates API, written for nodejs. Returns a `Promise` but can be used with `Callback` as well. ✨
+This is a simple implementation of the [Bitpay](https://bitpay.com) Rates API, written for nodejs.
+Returns a `Promise` but can be used with `Callback` as well. ✨
 
 ## 🤓 Usage
 
-Install using `$ yarn add bitpay-rates` or `$ npm i -g bitpay-rates`
+Install using `$ yarn add bitpay-rates` or `$ npm i bitpay-rates --save`
 
 Getting a rate
 
