@@ -5,7 +5,7 @@ bitpay-rates
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates)
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
 
-This is a simple implementation of the Bitpay Rates API, written for nodejs.
+This is a simple implementation of the [Bitpay](https://bitpay.com) Rates API, written for nodejs. Returns a `Promise` but can be used with `Callback` as well. ✨
 
 ## 🤓 Usage
 
@@ -17,6 +17,16 @@ Getting a rate
 const bitpayRates = require('bitpay-rates')
 const code = 'ARS' // see list of codes
 
+// Using Promises
+const ratePromise = bitpayRates.get(code)
+ratePromise.then(rate => {
+  console.log('Promise Rate:', rate)
+})
+.catch(err => {
+  console.log('Promise Error:', err)
+})
+
+// Using Callback
 bitpayRates.get(code, (err, res) => {
   console.log('Error:', err)
   console.log('Rate:', res)
@@ -28,6 +38,16 @@ Getting all the rates
 ``` javascript
 const bitpayRates = require('bitpay-rates')
 
+// Using Promises
+const ratesPromise = bitpayRates.get()
+ratesPromise.then(rates => {
+  console.log('Promise Rates:', rates)
+})
+.catch(err => {
+  console.log('Promise Error:', err)
+})
+
+// Using Callback
 bitpayRates.get((err, res) => {
   console.log('Error:', err)
   console.log('Rates:', res)
