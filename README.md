@@ -1,6 +1,7 @@
 bitpay-rates
 ============
 
+[![Build Status](https://travis-ci.org/colkito/bitpay-rates.svg?branch=master)](https://travis-ci.org/colkito/bitpay-rates)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates)
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
