@@ -226,3 +226,8 @@ The complete list of codes:
 Hey dude! Help me out for a couple of :beers:!
 
 [![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)  [![Beerpay](https://beerpay.io/img/badges/make-wish-square.svg)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)  [![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
