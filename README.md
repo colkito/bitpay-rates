@@ -9,15 +9,28 @@ bitpay-rates
 This is a simple implementation of the [Bitpay](https://bitpay.com) Rates API, written for nodejs.
 Returns a `Promise` but can be used with `Callback` as well. ✨
 
-## 🤓 Usage
+## 😪 Installing
 
-Install using `$ yarn add bitpay-rates` or `$ npm i bitpay-rates --save`
+Using yarn:
+
+```bash
+$ yarn add bitpay-rates
+```
+
+Using npm:
+
+```bash
+$ npm i bitpay-rates --save
+```
+
+## 🤓 Example
 
 Getting a rate
 
-``` javascript
-const bitpayRates = require('bitpay-rates')
-const code = 'ARS' // see list of codes
+```js
+import bitpayRates from 'bitpay-rates'
+
+const code = 'ARS' // see list of codes bellow
 
 // Using Promises
 const ratePromise = bitpayRates.get(code)
@@ -37,7 +50,52 @@ bitpayRates.get(code, (err, res) => {
 
 Getting all the rates
 
-``` javascript
+```js
+import bitpayRates from 'bitpay-rates'
+
+// Using Promises
+const ratesPromise = bitpayRates.get()
+ratesPromise.then(rates => {
+  console.log('Promise Rates:', rates)
+})
+.catch(err => {
+  console.log('Promise Error:', err)
+})
+
+// Using Callback
+bitpayRates.get((err, res) => {
+  console.log('Error:', err)
+  console.log('Rates:', res)
+})
+```
+
+
+### 👴 ES5
+Getting a rate
+
+```js
+const bitpayRates = require('bitpay-rates')
+const code = 'ARS' // see list of codes bellow
+
+// Using Promises
+const ratePromise = bitpayRates.get(code)
+ratePromise.then(rate => {
+  console.log('Promise Rate:', rate)
+})
+.catch(err => {
+  console.log('Promise Error:', err)
+})
+
+// Using Callback
+bitpayRates.get(code, (err, res) => {
+  console.log('Error:', err)
+  console.log('Rate:', res)
+})
+```
+
+Getting all the rates
+
+```js
 const bitpayRates = require('bitpay-rates')
 
 // Using Promises
@@ -56,8 +114,8 @@ bitpayRates.get((err, res) => {
 })
 ```
 
-## 🌎 Codes
-The complete list of codes:
+## 🌎 Codes (updated: 2018-01-16)
+The complete list of 159 codes:
 
 - BTC (Bitcoin)
 - USD (US Dollar)
@@ -71,6 +129,7 @@ The complete list of codes:
 - SEK (Swedish Krona)
 - NZD (New Zealand Dollar)
 - KRW (South Korean Won)
+- BCH (Bitcoin Cash)
 - AED (UAE Dirham)
 - AFN (Afghan Afghani)
 - ALL (Albanian Lek)
@@ -93,7 +152,6 @@ The complete list of codes:
 - BSD (Bahamian Dollar)
 - BTN (Bhutanese Ngultrum)
 - BWP (Botswanan Pula)
-- BYR (Belarusian Ruble)
 - BZD (Belize Dollar)
 - CDF (Congolese Franc)
 - CLF (Chilean Unit of Account (UF))
@@ -107,7 +165,6 @@ The complete list of codes:
 - DKK (Danish Krone)
 - DOP (Dominican Peso)
 - DZD (Algerian Dinar)
-- EEK (Estonian Kroon)
 - EGP (Egyptian Pound)
 - ETB (Ethiopian Birr)
 - FJD (Fijian Dollar)
@@ -146,8 +203,6 @@ The complete list of codes:
 - LKR (Sri Lankan Rupee)
 - LRD (Liberian Dollar)
 - LSL (Lesotho Loti)
-- LTL (Lithuanian Litas)
-- LVL (Latvian Lats)
 - LYD (Libyan Dinar)
 - MAD (Moroccan Dirham)
 - MDL (Moldovan Leu)
@@ -212,8 +267,6 @@ The complete list of codes:
 - VUV (Vanuatu Vatu)
 - WST (Samoan Tala)
 - XAF (CFA Franc BEAC)
-- XAG (Silver (troy ounce))
-- XAU (Gold (troy ounce))
 - XCD (East Caribbean Dollar)
 - XOF (CFA Franc BCEAO)
 - XPF (CFP Franc)
@@ -221,6 +274,8 @@ The complete list of codes:
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
+- XAG (Silver (troy ounce))
+- XAU (Gold (troy ounce))
 
 ## Support on Beerpay
 Hey dude! Help me out for a couple of :beers:!
