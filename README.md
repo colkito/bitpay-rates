@@ -1,10 +1,10 @@
 bitpay-rates
 ============
 
-[![Build Status](https://travis-ci.org/colkito/bitpay-rates.svg?branch=master)](https://travis-ci.org/colkito/bitpay-rates)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates)
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
+[![Build Status](https://img.shields.io/travis/colkito/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/colkito/bitpay-rates)
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg?style=flat-square)](https://github.com/sindresorhus/xo)
+[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates)
+[![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
 
 This is a simple implementation of the [Bitpay](https://bitpay.com) Rates API, written for nodejs.
 Returns a `Promise` but can be used with `Callback` as well. ✨
@@ -276,11 +276,6 @@ The complete list of 159 codes:
 - ZWL (Zimbabwean Dollar)
 - XAG (Silver (troy ounce))
 - XAU (Gold (troy ounce))
-
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)  [![Beerpay](https://beerpay.io/img/badges/make-wish-square.svg)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
 
 ## Support on Beerpay
 Hey dude! Help me out for a couple of :beers:!
