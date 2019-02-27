@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/travis/colcodev/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/colcodev/bitpay-rates)
 
-A NodeJS wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
+A NodeJS (+8.x) wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
 Returns a `Promise` but can be used with `Callback` as well. ✨
 
 ## Installing
@@ -59,7 +59,7 @@ bitpayRates.get((err, res) => {
 });
 ```
 
-## Available Codes (updated: 2019-02-26)
+## Available Codes (updated: 2019-02-27)
 
 The complete list of 163 codes:
 
