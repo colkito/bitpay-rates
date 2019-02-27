@@ -4,10 +4,7 @@
   "description": "A NodeJS wrapper for Bitpay Rates API",
   "main": "./lib/rates.js",
   "author": "Mario Colque <colquemario@gmail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/colcodev/bitpay-rates.git"
-  },
+  "repository": "git+https://github.com/colcodev/bitpay-rates.git",
   "keywords": [
     "bitcoin",
     "bitpay",

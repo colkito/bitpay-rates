@@ -1,15 +1,11 @@
-bitpay-rates
-============
+# bitpay-rates
 
-[![Build Status](https://img.shields.io/travis/colkito/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/colkito/bitpay-rates)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg?style=flat-square)](https://github.com/sindresorhus/xo)
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates)
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
+[![Build Status](https://img.shields.io/travis/colcodev/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/colcodev/bitpay-rates)
 
-This is a simple implementation of the [Bitpay](https://bitpay.com) Rates API, written for nodejs.
+A NodeJS wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
 Returns a `Promise` but can be used with `Callback` as well. ✨
 
-## 😪 Installing
+## Installing
 
 Using yarn:
 
@@ -23,101 +19,52 @@ Using npm:
 $ npm i bitpay-rates --save
 ```
 
-## 🤓 Example
+## Example
 
 Getting a rate
 
 ```js
-import bitpayRates from 'bitpay-rates'
+import bitpayRates from "bitpay-rates";
 
-const code = 'ARS' // see list of codes bellow
+const code = "ARS"; // see list of codes bellow
 
 // Using Promises
-const ratePromise = bitpayRates.get(code)
-ratePromise.then(rate => {
-  console.log('Promise Rate:', rate)
-})
-.catch(err => {
-  console.log('Promise Error:', err)
-})
+const ratePromise = bitpayRates.get(code);
+ratePromise
+  .then(rate => console.log("Promise Rate:", rate))
+  .catch(err => console.log("Promise Error:", err));
 
 // Using Callback
 bitpayRates.get(code, (err, res) => {
-  console.log('Error:', err)
-  console.log('Rate:', res)
-})
+  console.log("Callback Error:", err);
+  console.log("Callback Rate:", res);
+});
 ```
 
 Getting all the rates
 
 ```js
-import bitpayRates from 'bitpay-rates'
+import bitpayRates from "bitpay-rates";
 
 // Using Promises
-const ratesPromise = bitpayRates.get()
-ratesPromise.then(rates => {
-  console.log('Promise Rates:', rates)
-})
-.catch(err => {
-  console.log('Promise Error:', err)
-})
+const ratesPromise = bitpayRates.get();
+ratesPromise
+  .then(rates => console.log("Promise Rates:", rates))
+  .catch(err => console.log("Promise Error:", err));
 
 // Using Callback
 bitpayRates.get((err, res) => {
-  console.log('Error:', err)
-  console.log('Rates:', res)
-})
+  console.log("Callback Error:", err);
+  console.log("Callback Rates:", res);
+});
 ```
 
+## Available Codes (updated: 2019-02-26)
 
-### 👴 ES5
-Getting a rate
-
-```js
-const bitpayRates = require('bitpay-rates')
-const code = 'ARS' // see list of codes bellow
-
-// Using Promises
-const ratePromise = bitpayRates.get(code)
-ratePromise.then(rate => {
-  console.log('Promise Rate:', rate)
-})
-.catch(err => {
-  console.log('Promise Error:', err)
-})
-
-// Using Callback
-bitpayRates.get(code, (err, res) => {
-  console.log('Error:', err)
-  console.log('Rate:', res)
-})
-```
-
-Getting all the rates
-
-```js
-const bitpayRates = require('bitpay-rates')
-
-// Using Promises
-const ratesPromise = bitpayRates.get()
-ratesPromise.then(rates => {
-  console.log('Promise Rates:', rates)
-})
-.catch(err => {
-  console.log('Promise Error:', err)
-})
-
-// Using Callback
-bitpayRates.get((err, res) => {
-  console.log('Error:', err)
-  console.log('Rates:', res)
-})
-```
-
-## 🌎 Codes (updated: 2018-01-16)
-The complete list of 159 codes:
+The complete list of 163 codes:
 
 - BTC (Bitcoin)
+- BCH (Bitcoin Cash)
 - USD (US Dollar)
 - EUR (Eurozone Euro)
 - GBP (Pound Sterling)
@@ -129,7 +76,6 @@ The complete list of 159 codes:
 - SEK (Swedish Krona)
 - NZD (New Zealand Dollar)
 - KRW (South Korean Won)
-- BCH (Bitcoin Cash)
 - AED (UAE Dirham)
 - AFN (Afghan Afghani)
 - ALL (Albanian Lek)
@@ -175,6 +121,7 @@ The complete list of 159 codes:
 - GMD (Gambian Dalasi)
 - GNF (Guinean Franc)
 - GTQ (Guatemalan Quetzal)
+- GUSD (Gemini US Dollar)
 - GYD (Guyanaese Dollar)
 - HKD (Hong Kong Dollar)
 - HNL (Honduran Lempira)
@@ -211,7 +158,7 @@ The complete list of 159 codes:
 - MMK (Myanma Kyat)
 - MNT (Mongolian Tugrik)
 - MOP (Macanese Pataca)
-- MRO (Mauritanian Ouguiya)
+- MRU (Mauritanian Ouguiya)
 - MUR (Mauritian Rupee)
 - MVR (Maldivian Rufiyaa)
 - MWK (Malawian Kwacha)
@@ -225,6 +172,7 @@ The complete list of 159 codes:
 - NPR (Nepalese Rupee)
 - OMR (Omani Rial)
 - PAB (Panamanian Balboa)
+- PAX (Paxos Standard USD)
 - PEN (Peruvian Nuevo Sol)
 - PGK (Papua New Guinean Kina)
 - PHP (Philippine Peso)
@@ -245,7 +193,7 @@ The complete list of 159 codes:
 - SLL (Sierra Leonean Leone)
 - SOS (Somali Shilling)
 - SRD (Surinamese Dollar)
-- STD (São Tomé and Príncipe Dobra)
+- STN (São Tomé and Príncipe Dobra)
 - SVC (Salvadoran Colón)
 - SYP (Syrian Pound)
 - SZL (Swazi Lilangeni)
@@ -260,9 +208,11 @@ The complete list of 159 codes:
 - TZS (Tanzanian Shilling)
 - UAH (Ukrainian Hryvnia)
 - UGX (Ugandan Shilling)
+- USDC (Circle USD Coin)
 - UYU (Uruguayan Peso)
 - UZS (Uzbekistan Som)
 - VEF (Venezuelan Bolívar Fuerte)
+- VES (Venezuelan Bolívar Soberano)
 - VND (Vietnamese Dong)
 - VUV (Vanuatu Vatu)
 - WST (Samoan Tala)
@@ -276,11 +226,3 @@ The complete list of 159 codes:
 - ZWL (Zimbabwean Dollar)
 - XAG (Silver (troy ounce))
 - XAU (Gold (troy ounce))
-
-## Support on Beerpay
-Hey dude! Help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/colkito/bitpay-rates/badge.svg?style=beer-square)](https://beerpay.io/colkito/bitpay-rates)  [![Beerpay](https://beerpay.io/colkito/bitpay-rates/make-wish.svg?style=flat-square)](https://beerpay.io/colkito/bitpay-rates?focus=wish)
-
-
-🤘
