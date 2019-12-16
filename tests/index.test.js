@@ -1,6 +1,6 @@
 const nock = require("nock");
 
-const bitpayRates = require("../lib/rates");
+const bitpayRates = require("../src");
 const code = "ARS";
 
 describe("Get User tests", () => {
