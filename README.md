@@ -61,9 +61,9 @@ bitpayRates.get((err, res) => {
 });
 ```
 
-## Available Codes (updated: 2019-02-27)
+## Available Codes (updated: 2019-12-15)
 
-The complete list of 163 codes:
+The complete list of 166 codes:
 
 - BTC (Bitcoin)
 - BCH (Bitcoin Cash)
@@ -78,6 +78,8 @@ The complete list of 163 codes:
 - SEK (Swedish Krona)
 - NZD (New Zealand Dollar)
 - KRW (South Korean Won)
+- ETH (Ether)
+- XRP (Ripple)
 - AED (UAE Dirham)
 - AFN (Afghan Afghani)
 - ALL (Albanian Lek)
@@ -100,6 +102,7 @@ The complete list of 163 codes:
 - BSD (Bahamian Dollar)
 - BTN (Bhutanese Ngultrum)
 - BWP (Botswanan Pula)
+- BYN (Belarusian Ruble)
 - BZD (Belize Dollar)
 - CDF (Congolese Franc)
 - CLF (Chilean Unit of Account (UF))
