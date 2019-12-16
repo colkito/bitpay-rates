@@ -12,13 +12,13 @@ Returns a `Promise` but can be used with `Callback` as well. ✨
 Using yarn:
 
 ```bash
-$ yarn add bitpay-rates
+yarn add bitpay-rates
 ```
 
 Using npm:
 
 ```bash
-$ npm i bitpay-rates --save
+npm i bitpay-rates --save
 ```
 
 ## Example
