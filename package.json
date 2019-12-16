@@ -1,8 +1,14 @@
 {
   "name": "bitpay-rates",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "A NodeJS wrapper for Bitpay Rates API",
-  "keywords": ["bitcoin", "bitpay", "rates", "countries", "price"],
+  "keywords": [
+    "bitcoin",
+    "bitpay",
+    "rates",
+    "countries",
+    "price"
+  ],
   "author": "Mario Colque <colquemario@gmail.com>",
   "license": "MIT",
   "main": "./src/index.js",
