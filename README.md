@@ -61,7 +61,7 @@ bitpayRates.get((err, res) => {
 });
 ```
 
-## Available Codes (updated: 2019-12-15)
+## Available Codes (updated: 2020-04-15)
 
 The complete list of 166 codes:
 
@@ -222,12 +222,12 @@ The complete list of 166 codes:
 - VUV (Vanuatu Vatu)
 - WST (Samoan Tala)
 - XAF (CFA Franc BEAC)
+- XAG (Silver (troy ounce))
+- XAU (Gold (troy ounce))
 - XCD (East Caribbean Dollar)
-- XOF (CFA Franc BCEAO)
 - XPF (CFP Franc)
+- XOF (CFA Franc BCEAO)
 - YER (Yemeni Rial)
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
-- XAG (Silver (troy ounce))
-- XAU (Gold (troy ounce))
