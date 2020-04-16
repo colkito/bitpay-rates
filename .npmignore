@@ -1,7 +1,0 @@
-example
-src
-.editorconfig
-.travis.yml
-tsconfig.json
-tslint.json
-.prettierrc
