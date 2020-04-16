@@ -10,7 +10,7 @@ export type RateType = {
   rate: number;
 };
 
-export const get = (code: string, callback?: Callback) => {
+export const get = (code?: string | Callback, callback?: Callback) => {
   let path = '/rates';
   let cb = callback || ((): void => {});
 
