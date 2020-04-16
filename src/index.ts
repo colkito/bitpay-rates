@@ -1,10 +1,18 @@
-import { request } from 'https';
+/* tslint:disable:no-empty */
 
-export type Callback = (...args: any[]) => void
+import https from 'https';
 
-export function get(code: string, callback: Callback) {
+export type Callback = (...args: any[]) => void;
+
+export type RateType = {
+  code: string;
+  name: string;
+  rate: number;
+};
+
+export const get = (code: string, callback?: Callback) => {
   let path = '/rates';
-  let cb = callback || function() {};
+  let cb = callback || ((): void => {});
 
   if (code) {
     if (typeof code === 'function') {
@@ -18,37 +26,34 @@ export function get(code: string, callback: Callback) {
     const options = {
       host: 'bitpay.com',
       path,
-      method: 'GET',
       headers: {},
-      agent: false
+      agent: false,
     };
 
-    const req = request(options);
+    return https
+      .get(options, (res) => {
+        let data = '';
 
-    req.end();
+        res.on('data', (chunk) => {
+          data += chunk.toString('utf8');
+        });
 
-    req.on('error', (err: any) => {
-      reject(err);
-      return cb(err);
-    });
-
-    req.on('response', (res: any) => {
-      let data = '';
-
-      res.on('data', (chunk: any) => {
-        data += chunk.toString('utf8');
+        res.on('end', () => {
+          try {
+            const parsed = JSON.parse(data);
+            resolve(parsed.data);
+            return cb(null, parsed.data);
+          } catch (err) {
+            reject(err);
+            return cb(err);
+          }
+        });
+      })
+      .on('error', (err) => {
+        reject(err);
+        return cb(err);
       });
-
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          resolve(parsed.data);
-          return cb(null, parsed.data);
-        } catch (err) {
-          reject(err);
-          return cb(err);
-        }
-      });
-    });
   });
 };
+
+export default { get };

@@ -4,8 +4,12 @@
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
-A NodeJS (>=10) wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
-Returns a `Promise` but can be used with `Callback` as well. ✨
+A tiny and zero-dep wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
+This module returns a `Promise` but can be used with `Callback` as well. ✨
+
+## Requirements
+- nodejs
+- typescript
 
 ## Installing
 
@@ -26,38 +30,38 @@ npm i bitpay-rates --save
 Getting a rate
 
 ```js
-import bitpayRates from "bitpay-rates";
+import bitpayRates from 'bitpay-rates';
 
-const code = "ARS"; // see list of codes bellow
+const code = 'ARS'; // see list of codes bellow
 
 // Using Promises
 const ratePromise = bitpayRates.get(code);
 ratePromise
-  .then(rate => console.log("Promise Rate:", rate)) // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
-  .catch(err => console.log("Promise Error:", err));
+  .then(rate => console.log('Promise Rate:', rate)) // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
+  .catch(err => console.log('Promise Error:', err));
 
 // Using Callback
 bitpayRates.get(code, (err, res) => {
-  console.log("Callback Error:", err);
-  console.log("Callback Rate:", res); // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
+  console.log('Callback Error:', err);
+  console.log('Callback Rate:', res); // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
 });
 ```
 
 Getting all the rates
 
 ```js
-import bitpayRates from "bitpay-rates";
+import bitpayRates from 'bitpay-rates';
 
 // Using Promises
 const ratesPromise = bitpayRates.get();
 ratesPromise
-  .then(rates => console.log("Promise Rates:", rates)) // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
-  .catch(err => console.log("Promise Error:", err));
+  .then(rates => console.log('Promise Rates:', rates)) // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
+  .catch(err => console.log('Promise Error:', err));
 
 // Using Callback
 bitpayRates.get((err, res) => {
-  console.log("Callback Error:", err);
-  console.log("Callback Rates:", res); // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
+  console.log('Callback Error:', err);
+  console.log('Callback Rates:', res); // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
 });
 ```
 
