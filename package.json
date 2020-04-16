@@ -24,10 +24,12 @@
   },
   "homepage": "https://github.com/colcodev/bitpay-rates#readme",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build" : "tsc"
   },
   "devDependencies": {
     "jest": "^25.3.0",
-    "nock": "^12.0.3"
+    "nock": "^12.0.3",
+    "typescript": "^3.8.3"
   }
 }
