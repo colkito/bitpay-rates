@@ -13,13 +13,15 @@ describe('Get all rates', () => {
   });
 
   test('using promises', async () => {
-    const rate: any = await get();
-    expect(typeof rate).toEqual('object');
+    const rates: any = await get();
+    expect(typeof rates).toEqual('object');
+    expect(Array.isArray(rates)).toBe(true);
   });
 
   test('using callback', () => {
-    get((err: any, rate) => {
-      expect(typeof rate).toEqual('object');
+    get((err: any, rates) => {
+      expect(typeof rates).toEqual('object');
+      expect(Array.isArray(rates)).toBe(true);
     });
   });
 });
