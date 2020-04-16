@@ -1,6 +1,6 @@
 {
   "name": "bitpay-rates",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "A tiny NodeJS wrapper for the BitPay Rates API",
   "engines": {
     "node": ">=10"
