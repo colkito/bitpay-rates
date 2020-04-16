@@ -4,7 +4,7 @@
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
-A tiny (and zero-deps) wrapper for the [Bitpay](https://bitpay.com/rates) Rates API. Now written in TypeScript.
+A tiny (and zero-deps) wrapper for the [BitPay](https://bitpay.com/rates) Rates API. Now written in TypeScript.
 
 This module returns a `Promise` but can be used with `Callback` as well. ✨
 
