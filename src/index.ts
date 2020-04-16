@@ -1,43 +1,45 @@
-const https = require("https");
+import { request } from 'https';
 
-function get(code, callback) {
-  let path = "/rates";
+export type Callback = (...args: any[]) => void
+
+export function get(code: string, callback: Callback) {
+  let path = '/rates';
   let cb = callback || function() {};
 
   if (code) {
-    if (typeof code === "function") {
+    if (typeof code === 'function') {
       cb = code;
-    } else if (typeof code === "string") {
+    } else if (typeof code === 'string') {
       path += `/${code.toUpperCase()}`;
     }
   }
 
   return new Promise((resolve, reject) => {
     const options = {
-      host: "bitpay.com",
+      host: 'bitpay.com',
       path,
-      method: "GET",
+      method: 'GET',
       headers: {},
       agent: false
     };
 
-    const req = https.request(options);
+    const req = request(options);
 
     req.end();
 
-    req.on("error", err => {
+    req.on('error', (err: any) => {
       reject(err);
       return cb(err);
     });
 
-    req.on("response", res => {
-      let data = "";
+    req.on('response', (res: any) => {
+      let data = '';
 
-      res.on("data", chunk => {
-        data += chunk.toString("utf8");
+      res.on('data', (chunk: any) => {
+        data += chunk.toString('utf8');
       });
 
-      res.on("end", () => {
+      res.on('end', () => {
         try {
           const parsed = JSON.parse(data);
           resolve(parsed.data);
@@ -49,7 +51,4 @@ function get(code, callback) {
       });
     });
   });
-}
-
-module.exports = { get };
-exports.default = { get };
+};
