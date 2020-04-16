@@ -1,4 +1,4 @@
-const bitpayRates = require("../src");
+const bitpayRates = require("../dist");
 
 const code = "ARS";
 
