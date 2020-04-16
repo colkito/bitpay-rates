@@ -4,7 +4,7 @@
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
-A NodeJS (+8.x) wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
+A NodeJS (>=10) wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
 Returns a `Promise` but can be used with `Callback` as well. ✨
 
 ## Installing
@@ -33,13 +33,13 @@ const code = "ARS"; // see list of codes bellow
 // Using Promises
 const ratePromise = bitpayRates.get(code);
 ratePromise
-  .then(rate => console.log("Promise Rate:", rate))
+  .then(rate => console.log("Promise Rate:", rate)) // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
   .catch(err => console.log("Promise Error:", err));
 
 // Using Callback
 bitpayRates.get(code, (err, res) => {
   console.log("Callback Error:", err);
-  console.log("Callback Rate:", res);
+  console.log("Callback Rate:", res); // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
 });
 ```
 
@@ -51,13 +51,13 @@ import bitpayRates from "bitpay-rates";
 // Using Promises
 const ratesPromise = bitpayRates.get();
 ratesPromise
-  .then(rates => console.log("Promise Rates:", rates))
+  .then(rates => console.log("Promise Rates:", rates)) // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
   .catch(err => console.log("Promise Error:", err));
 
 // Using Callback
 bitpayRates.get((err, res) => {
   console.log("Callback Error:", err);
-  console.log("Callback Rates:", res);
+  console.log("Callback Rates:", res); // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
 });
 ```
 
