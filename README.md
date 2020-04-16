@@ -235,3 +235,7 @@ The complete list of 166 codes:
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
+
+## Related Packages
+
+- [Blockchain Exchange Rates API](https://npmjs.com/blockchain-rates)
