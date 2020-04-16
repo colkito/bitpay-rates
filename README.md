@@ -9,8 +9,7 @@ A tiny (and zero-deps) wrapper for the [Bitpay](https://bitpay.com/rates) Rates 
 This module returns a `Promise` but can be used with `Callback` as well. ✨
 
 ## Requirements
-- nodejs
-- typescript
+- nodejs >= 10.x
 
 ## Installing
 
