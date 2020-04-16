@@ -1,6 +1,6 @@
 {
   "name": "bitpay-rates",
-  "version": "0.2.19",
+  "version": "1.0.0",
   "description": "A tiny NodeJS wrapper for Bitpay Rates API",
   "engines": {
     "node": ">=10"
@@ -29,11 +29,11 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "prepare" : "npm run build",
-    "prepublishOnly" : "npm test && npm run lint",
-    "preversion" : "npm run lint",
-    "version" : "npm run format && git add -A src",
-    "postversion" : "git push && git push --tags"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
