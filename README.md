@@ -5,6 +5,7 @@
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
 A tiny and zero-dep wrapper for [Bitpay](https://bitpay.com/rates) Rates API.
+
 This module returns a `Promise` but can be used with `Callback` as well. ✨
 
 ## Requirements
