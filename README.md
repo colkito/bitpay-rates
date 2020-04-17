@@ -6,9 +6,10 @@
 
 A tiny (and zero-deps) wrapper for the [BitPay](https://bitpay.com/rates) Rates API. Now written in TypeScript.
 
-This module returns a `Promise` but can be used with `Callback` as well. ✨
+This module returns a `Promise` but can be used with a `Callback` as well. ✨
 
 ## Requirements
+
 - nodejs >= 10.x
 
 ## Installing
@@ -25,26 +26,36 @@ Using npm:
 npm i bitpay-rates --save
 ```
 
-## Example
+## Examples
 
-Getting a rate
+Getting a rate by code
 
 ```js
 import bitpayRates from 'bitpay-rates';
 
 const code = 'ARS'; // see list of codes bellow
 
-// Using Promises
+// Using promise
 const ratePromise = bitpayRates.get(code);
 ratePromise
   .then(rate => console.log('Promise Rate:', rate)) // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
   .catch(err => console.log('Promise Error:', err));
 
-// Using Callback
+// Using callback
 bitpayRates.get(code, (err, res) => {
   console.log('Callback Error:', err);
   console.log('Callback Rate:', res); // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
 });
+```
+
+Successful response
+
+```json
+{
+  "code": "ARS",
+  "name": "Argentine Peso",
+  "rate": 440369.72
+}
 ```
 
 Getting all the rates
@@ -52,17 +63,35 @@ Getting all the rates
 ```js
 import bitpayRates from 'bitpay-rates';
 
-// Using Promises
+// Using promise
 const ratesPromise = bitpayRates.get();
 ratesPromise
   .then(rates => console.log('Promise Rates:', rates)) // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
   .catch(err => console.log('Promise Error:', err));
 
-// Using Callback
+// Using callback
 bitpayRates.get((err, res) => {
   console.log('Callback Error:', err);
   console.log('Callback Rates:', res); // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
 });
+```
+
+Successful response
+
+```json
+[
+  {
+    "code": "ARS",
+    "name": "Argentine Peso",
+    "rate": 440369.72
+  },
+  {
+    "code": "USD",
+    "name": "US Dollar",
+    "rate": 7039.17
+  },
+  {...}
+]
 ```
 
 ## Available Codes (updated: 2020-04-15)
