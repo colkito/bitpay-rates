@@ -1,6 +1,6 @@
 # bitpay-rates
 
-[![Build Status](https://img.shields.io/travis/colcodev/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/colcodev/bitpay-rates)
+[![Build Status](https://img.shields.io/travis/bycolco/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/bycolco/bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 

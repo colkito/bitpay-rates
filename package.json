@@ -12,18 +12,18 @@
     "countries",
     "price"
   ],
-  "author": "Mario Colque <colquemario@gmail.com>",
+  "author": "Mario Colque <bycolco@gmail.com>",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/colcodev/bitpay-rates.git"
+    "url": "https://github.com/bycolco/bitpay-rates.git"
   },
   "bugs": {
-    "url": "https://github.com/colcodev/bitpay-rates/issues"
+    "url": "https://github.com/bycolco/bitpay-rates/issues"
   },
-  "homepage": "https://github.com/colcodev/bitpay-rates#readme",
+  "homepage": "https://github.com/bycolco/bitpay-rates#readme",
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
