@@ -10,32 +10,14 @@ export type RateType = {
   rate: number;
 };
 
-export type ApiResponse = {
-  data: RateType;
-};
-
 const returnPromise = (options: any): Promise<RateType> => {
   return new Promise((resolve, reject) => {
-    https
-      .get(options, (res: any) => {
-        const chunks: any[] = [];
-
-        res.on('data', (chunk: any) => {
-          chunks.push(chunk);
-        });
-
-        res.on('end', () => {
-          try {
-            const { data }: ApiResponse = JSON.parse(Buffer.concat(chunks).toString());
-            return resolve(data);
-          } catch (err) {
-            return reject(err);
-          }
-        });
-      })
-      .on('error', (err: any) => {
+    returnCallback(options, (err, data) => {
+      if (err) {
         return reject(err);
-      });
+      }
+      return resolve(data);
+    });
   });
 };
 
