@@ -94,9 +94,9 @@ Successful response
 ]
 ```
 
-## Available Codes (updated: 2020-04-15)
+## Available Codes (updated: 2021-03-21)
 
-The complete list of 166 codes:
+The complete list of 169 codes:
 
 - BTC (Bitcoin)
 - BCH (Bitcoin Cash)
@@ -134,6 +134,7 @@ The complete list of 166 codes:
 - BRL (Brazilian Real)
 - BSD (Bahamian Dollar)
 - BTN (Bhutanese Ngultrum)
+- BUSD (Binance USD)
 - BWP (Botswanan Pula)
 - BYN (Belarusian Ruble)
 - BZD (Belize Dollar)
@@ -145,8 +146,10 @@ The complete list of 166 codes:
 - CUP (Cuban Peso)
 - CVE (Cape Verdean Escudo)
 - CZK (Czech Koruna)
+- DAI (Dai)
 - DJF (Djiboutian Franc)
 - DKK (Danish Krone)
+- DOGE (Dogecoin)
 - DOP (Dominican Peso)
 - DZD (Algerian Dinar)
 - EGP (Egyptian Pound)
@@ -249,10 +252,10 @@ The complete list of 166 codes:
 - USDC (Circle USD Coin)
 - UYU (Uruguayan Peso)
 - UZS (Uzbekistan Som)
-- VEF (Venezuelan Bolívar Fuerte)
 - VES (Venezuelan Bolívar Soberano)
 - VND (Vietnamese Dong)
 - VUV (Vanuatu Vatu)
+- WBTC (Wrapped BTC)
 - WST (Samoan Tala)
 - XAF (CFA Franc BEAC)
 - XAG (Silver (troy ounce))
