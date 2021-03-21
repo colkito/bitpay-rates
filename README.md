@@ -12,20 +12,6 @@ This module returns a `Promise` but can be used with a `Callback` as well. ✨
 
 - nodejs >= 10.x
 
-## Installing
-
-Using yarn:
-
-```bash
-yarn add bitpay-rates
-```
-
-Using npm:
-
-```bash
-npm i bitpay-rates --save
-```
-
 ## Examples
 
 Getting a rate by code
@@ -33,18 +19,18 @@ Getting a rate by code
 ```js
 import bitpayRates from 'bitpay-rates';
 
-const code = 'ARS'; // see list of codes bellow
+const code = 'BUSD'; // see list of codes bellow
 
 // Using promise
 const ratePromise = bitpayRates.get(code);
 ratePromise
-  .then(rate => console.log('Promise Rate:', rate)) // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
+  .then(rate => console.log('Promise Rate:', rate))
   .catch(err => console.log('Promise Error:', err));
 
 // Using callback
 bitpayRates.get(code, (err, res) => {
   console.log('Callback Error:', err);
-  console.log('Callback Rate:', res); // i.e { code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }
+  console.log('Callback Rate:', res);
 });
 ```
 
@@ -52,9 +38,9 @@ Successful response
 
 ```json
 {
-  "code": "ARS",
-  "name": "Argentine Peso",
-  "rate": 440369.72
+  code: "BUSD",
+  name: "Binance USD",
+  rate: 57818.28
 }
 ```
 
@@ -66,13 +52,13 @@ import bitpayRates from 'bitpay-rates';
 // Using promise
 const ratesPromise = bitpayRates.get();
 ratesPromise
-  .then(rates => console.log('Promise Rates:', rates)) // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
+  .then(rates => console.log('Promise Rates:', rates))
   .catch(err => console.log('Promise Error:', err));
 
 // Using callback
 bitpayRates.get((err, res) => {
   console.log('Callback Error:', err);
-  console.log('Callback Rates:', res); // i.e [{ code: 'ARS', name: 'Argentine Peso', rate: 440369.72 }, {...}]
+  console.log('Callback Rates:', res);
 });
 ```
 
@@ -81,14 +67,14 @@ Successful response
 ```json
 [
   {
-    "code": "ARS",
-    "name": "Argentine Peso",
-    "rate": 440369.72
+    code: "ARS",
+    name: "Argentine Peso",
+   rate: 5291987.02
   },
   {
-    "code": "USD",
-    "name": "US Dollar",
-    "rate": 7039.17
+    code: "BUSD",
+    name: "Binance USD",
+    rate: 57818.28
   },
   {...}
 ]
