@@ -1,6 +1,6 @@
-/* tslint:disable:no-empty */
+import * as https from 'https';
 
-import https from 'https';
+declare const Buffer: any;
 
 export type Callback = (...args: any[]) => void;
 
@@ -10,50 +10,80 @@ export type RateType = {
   rate: number;
 };
 
-export const get = (code?: string | Callback, callback?: Callback) => {
-  let path = '/rates';
-  let cb = callback || ((): void => {});
+export type ApiResponse = {
+  data: RateType;
+};
 
-  if (code) {
-    if (typeof code === 'function') {
-      cb = code;
-    } else if (typeof code === 'string') {
-      path += `/${code.toUpperCase()}`;
-    }
-  }
-
+const returnPromise = (options: any): Promise<RateType> => {
   return new Promise((resolve, reject) => {
-    const options = {
-      host: 'bitpay.com',
-      path,
-      headers: {},
-      agent: false,
-    };
+    https
+      .get(options, (res: any) => {
+        const chunks: any[] = [];
 
-    return https
-      .get(options, (res) => {
-        let data = '';
-
-        res.on('data', (chunk) => {
-          data += chunk.toString('utf8');
+        res.on('data', (chunk: any) => {
+          chunks.push(chunk);
         });
 
         res.on('end', () => {
           try {
-            const parsed = JSON.parse(data);
-            resolve(parsed.data);
-            return cb(null, parsed.data);
+            const { data }: ApiResponse = JSON.parse(Buffer.concat(chunks).toString());
+            return resolve(data);
           } catch (err) {
-            reject(err);
-            return cb(err);
+            return reject(err);
           }
         });
       })
-      .on('error', (err) => {
-        reject(err);
-        return cb(err);
+      .on('error', (err: any) => {
+        return reject(err);
       });
   });
+};
+
+const returnCallback = (options: any, callback: Callback): void => {
+  https
+    .get(options, (res: any) => {
+      let dataBuffer = '';
+
+      res.on('data', (chunk: any) => {
+        dataBuffer += chunk.toString('utf8');
+      });
+
+      res.on('end', () => {
+        try {
+          const { data } = JSON.parse(dataBuffer);
+          return callback(null, data);
+        } catch (err) {
+          return callback(err);
+        }
+      });
+    })
+    .on('error', (err: any) => {
+      return callback(err);
+    });
+};
+
+export const get = (
+  code?: string | Callback,
+  callback?: Callback,
+): Promise<RateType> | Promise<[RateType]> | void => {
+  const options = {
+    host: 'bitpay.com',
+    path: '/rates',
+    headers: {},
+    agent: false,
+  };
+
+  if (typeof code === 'function') {
+    return returnCallback(options, code);
+  } else if (typeof code === 'string') {
+    options.path += `/${code.toUpperCase()}`;
+    if (callback) {
+      return returnCallback(options, callback);
+    }
+    return returnPromise(options);
+  } else if (typeof code === 'undefined') {
+    return returnPromise(options);
+  }
 };
 
 export default { get };

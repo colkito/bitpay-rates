@@ -1,15 +1,13 @@
 import nock from 'nock';
 
-import { get } from '../src';
+import { get } from './index';
 
 describe('Get all rates', () => {
   beforeEach(() => {
-    nock('https://bitpay.com')
-      .persist()
-      .get('/rates')
-      .reply(200, {
-        data: []
-      });
+    nock.cleanAll();
+    nock('https://bitpay.com').get('/rates').reply(200, {
+      data: [],
+    });
   });
 
   test('using promises', async () => {
@@ -30,26 +28,28 @@ describe('Get a rate by code', () => {
   const code = 'ARS';
 
   beforeEach(() => {
-    nock('https://bitpay.com')
-      .persist()
-      .get(`/rates/${code}`)
-      .reply(200, {
-        data: {
-          code
-        }
-      });
+    nock.cleanAll();
+    nock('https://bitpay.com').get(`/rates/${code}`).reply(200, {
+      data: {
+        code,
+        name: "Argentine Peso",
+        rate: 5237449.75
+      },
+    });
   });
 
   test('using promises', async () => {
     const rate: any = await get(code);
     expect(typeof rate).toEqual('object');
     expect(rate.code).toEqual(code);
+    expect(rate.name).toEqual('Argentine Peso');
   });
 
   test('using callback', () => {
     get(code, (err: any, rate: any) => {
       expect(typeof rate).toEqual('object');
       expect(rate.code).toEqual(code);
+      expect(rate.name).toEqual('Argentine Peso');
     });
   });
 });
