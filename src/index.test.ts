@@ -29,13 +29,15 @@ describe('Get a rate by code', () => {
 
   beforeEach(() => {
     nock.cleanAll();
-    nock('https://bitpay.com').get(`/rates/${code}`).reply(200, {
-      data: {
-        code,
-        name: "Argentine Peso",
-        rate: 5237449.75
-      },
-    });
+    nock('https://bitpay.com')
+      .get(`/rates/${code}`)
+      .reply(200, {
+        data: {
+          code,
+          name: 'Argentine Peso',
+          rate: 5237449.75,
+        },
+      });
   });
 
   test('using promises', async () => {
