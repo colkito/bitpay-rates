@@ -1,7 +1,5 @@
 import * as https from 'https';
 
-declare const Buffer: any;
-
 export type Callback = (...args: any[]) => void;
 
 export type RateType = {
@@ -13,9 +11,7 @@ export type RateType = {
 const returnPromise = (options: any): Promise<RateType> => {
   return new Promise((resolve, reject) => {
     returnCallback(options, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
+      if (err) return reject(err);
       return resolve(data);
     });
   });
