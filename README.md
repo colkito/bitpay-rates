@@ -24,8 +24,8 @@ const code = 'BUSD'; // see list of codes bellow
 // Using promise
 const ratePromise = bitpayRates.get(code);
 ratePromise
-  .then(rate => console.log('Promise Rate:', rate))
-  .catch(err => console.log('Promise Error:', err));
+  .then((rate) => console.log('Promise Rate:', rate))
+  .catch((err) => console.log('Promise Error:', err));
 
 // Using callback
 bitpayRates.get(code, (err, res) => {
@@ -52,8 +52,8 @@ import bitpayRates from 'bitpay-rates';
 // Using promise
 const ratesPromise = bitpayRates.get();
 ratesPromise
-  .then(rates => console.log('Promise Rates:', rates))
-  .catch(err => console.log('Promise Error:', err));
+  .then((rates) => console.log('Promise Rates:', rates))
+  .catch((err) => console.log('Promise Error:', err));
 
 // Using callback
 bitpayRates.get((err, res) => {
