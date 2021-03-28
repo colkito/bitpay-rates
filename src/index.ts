@@ -1,14 +1,25 @@
 import * as https from 'https';
+import { IncomingMessage } from 'node:http';
 
-export type Callback = (...args: any[]) => void;
+type EmptyObject = Record<string, never>;
 
-export type RateType = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Callback = (...args: any[]) => void;
+
+type RateObj = {
   code: string;
   name: string;
   rate: number;
 };
 
-const returnPromise = (options: any): Promise<RateType> => {
+type OptionsObj = {
+  host: string;
+  path: string;
+  headers: EmptyObject;
+  agent: boolean;
+};
+
+const returnPromise = (options: OptionsObj): Promise<RateObj> => {
   return new Promise((resolve, reject) => {
     returnCallback(options, (err, data) => {
       if (err) return reject(err);
@@ -17,12 +28,12 @@ const returnPromise = (options: any): Promise<RateType> => {
   });
 };
 
-const returnCallback = (options: any, callback: Callback): void => {
+const returnCallback = (options: OptionsObj, callback: Callback): void => {
   https
-    .get(options, (res: any) => {
+    .get(options, (res: IncomingMessage) => {
       let dataBuffer = '';
 
-      res.on('data', (chunk: any) => {
+      res.on('data', (chunk: Buffer) => {
         dataBuffer += chunk.toString('utf8');
       });
 
@@ -35,7 +46,7 @@ const returnCallback = (options: any, callback: Callback): void => {
         }
       });
     })
-    .on('error', (err: any) => {
+    .on('error', (err: Error) => {
       return callback(err);
     });
 };
@@ -43,7 +54,7 @@ const returnCallback = (options: any, callback: Callback): void => {
 export const get = (
   code?: string | Callback,
   callback?: Callback,
-): Promise<RateType> | Promise<[RateType]> | void => {
+): Promise<RateObj> | Promise<[RateObj]> | void => {
   const options = {
     host: 'bitpay.com',
     path: '/rates',

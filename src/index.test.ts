@@ -11,13 +11,13 @@ describe('Get all rates', () => {
   });
 
   test('using promises', async () => {
-    const rates: any = await get();
+    const rates = await get();
     expect(typeof rates).toEqual('object');
     expect(Array.isArray(rates)).toBe(true);
   });
 
   test('using callback', () => {
-    get((err: any, rates) => {
+    get((_, rates) => {
       expect(typeof rates).toEqual('object');
       expect(Array.isArray(rates)).toBe(true);
     });
@@ -41,6 +41,7 @@ describe('Get a rate by code', () => {
   });
 
   test('using promises', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rate: any = await get(code);
     expect(typeof rate).toEqual('object');
     expect(rate.code).toEqual(code);
@@ -48,7 +49,7 @@ describe('Get a rate by code', () => {
   });
 
   test('using callback', () => {
-    get(code, (err: any, rate: any) => {
+    get(code, (_, rate) => {
       expect(typeof rate).toEqual('object');
       expect(rate.code).toEqual(code);
       expect(rate.name).toEqual('Argentine Peso');
