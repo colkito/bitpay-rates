@@ -1,5 +1,5 @@
 import * as https from 'https';
-import { IncomingMessage } from 'node:http';
+import { IncomingMessage } from 'http';
 
 type EmptyObject = Record<string, never>;
 
