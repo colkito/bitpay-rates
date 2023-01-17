@@ -1,6 +1,6 @@
 # bitpay-rates
 
-## Available Codes (updated: 2023-01-11)
+## Available Codes
 
 This is the complete list of 183 codes:
 

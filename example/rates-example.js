@@ -3,23 +3,23 @@ const bitpayRates = require('../dist');
 const code = 'ARS';
 
 // Using Promises
-const ratesPromise = bitpayRates.get();
-ratesPromise
+bitpayRates
+  .get()
   .then((rates) => console.log('[Promise][All] Rates:', rates))
-  .catch((err) => console.log('[Promise][All] Error:', err));
+  .catch((err) => console.error('[Promise][All] Error:', err));
 
-const ratePromise = bitpayRates.get(code);
-ratePromise
-  .then((rate) => console.log('[Promise][Code] Rate:', rate))
-  .catch((err) => console.log('[Promise][Code] Error:', err));
+bitpayRates
+  .get(code)
+  .then((rate) => console.log(`[Promise][${code}] Rate:`, rate))
+  .catch((err) => console.error(`[Promise][${code}] Error:`, err));
 
 // Using Callbacks
 bitpayRates.get((err, res) => {
-  console.log('[Callback][All] Error:', err);
+  console.error('[Callback][All] Error:', err);
   console.log('[Callback][All] Rates:', res);
 });
 
 bitpayRates.get(code, (err, res) => {
-  console.log('[Callback][Code] Error:', err);
-  console.log('[Callback][Code] Rate:', res);
+  console.error(`[Callback][${code}] Error:`, err);
+  console.log(`[Callback][${code}] Rate:`, res);
 });

@@ -3,17 +3,17 @@
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
-📈 A tiny (and zero-deps) wrapper for the [BitPay](https://bitpay.com/rates) Rates API. Now written in TypeScript.
+A lightweight Node.js wrapper for [BitPay's](https://bitpay.com/rates) exchange rates API, now in TypeScript.
 
-This module returns a `Promise` but can be used with a `Callback` as well. ✨
+Zero-dependency, promise and callback support for easy integration into your project. ✨
 
 ## Requirements
 
-- nodejs >= 10.x
+- nodejs >= 12.x
 
 ## Examples
 
-Getting a rate by code
+Getting a rate by code:
 
 ```js
 import bitpayRates from 'bitpay-rates';
@@ -21,16 +21,10 @@ import bitpayRates from 'bitpay-rates';
 const code = 'ARS'; // see list of codes bellow
 
 // Using promise
-const ratePromise = bitpayRates.get(code);
-ratePromise
+bitpayRates
+  .get(code)
   .then((rate) => console.log('Promise Rate:', rate))
-  .catch((err) => console.log('Promise Error:', err));
-
-// Using callback
-bitpayRates.get(code, (err, res) => {
-  console.log('Callback Error:', err);
-  console.log('Callback Rate:', res);
-});
+  .catch((err) => console.error('Promise Error:', err));
 ```
 
 Successful response
@@ -43,20 +37,14 @@ Successful response
 }
 ```
 
-Getting all the rates
+Getting all the rates:
 
 ```js
 import bitpayRates from 'bitpay-rates';
 
-// Using promise
-const ratesPromise = bitpayRates.get();
-ratesPromise
-  .then((rates) => console.log('Promise Rates:', rates))
-  .catch((err) => console.log('Promise Error:', err));
-
 // Using callback
 bitpayRates.get((err, res) => {
-  console.log('Callback Error:', err);
+  console.error('Callback Error:', err);
   console.log('Callback Rates:', res);
 });
 ```
@@ -78,6 +66,8 @@ Successful response
   {...}
 ]
 ```
+
+More examples [here](example/rates-example.js).
 
 ## Available Codes (updated: 2023-01-11)
 
