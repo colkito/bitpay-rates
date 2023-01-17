@@ -13,7 +13,7 @@ Zero-dependency, promise and callback support for easy integration into your pro
 
 ## Examples
 
-Getting a rate by code:
+Getting a rate by `code`:
 
 ```js
 import bitpayRates from 'bitpay-rates';
@@ -27,7 +27,7 @@ bitpayRates
   .catch((err) => console.error('Promise Error:', err));
 ```
 
-Successful response
+Successful response:
 
 ```json
 {
@@ -37,7 +37,7 @@ Successful response
 }
 ```
 
-Getting all the rates:
+Getting `all` the rates:
 
 ```js
 import bitpayRates from 'bitpay-rates';
@@ -49,7 +49,7 @@ bitpayRates.get((err, res) => {
 });
 ```
 
-Successful response
+Successful response:
 
 ```json
 [
