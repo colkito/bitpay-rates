@@ -1,6 +1,6 @@
 # bitpay-rates
 
-[![Build Status](https://img.shields.io/travis/mariocxyz/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/mariocxyz/bitpay-rates)
+[![Build Status](https://img.shields.io/travis/colkito/bitpay-rates.svg?style=flat-square)](https://travis-ci.org/colkito/bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
@@ -19,7 +19,7 @@ Getting a rate by code
 ```js
 import bitpayRates from 'bitpay-rates';
 
-const code = 'BUSD'; // see list of codes bellow
+const code = 'ARS'; // see list of codes bellow
 
 // Using promise
 const ratePromise = bitpayRates.get(code);
@@ -38,9 +38,9 @@ Successful response
 
 ```json
 {
-  "code": "BUSD",
-  "name": "Binance USD",
-  "rate": 57818.28
+  "code": "ARS",
+  "name": "Argentine Peso",
+  "rate": 3793422.92
 }
 ```
 
@@ -80,9 +80,9 @@ Successful response
 ]
 ```
 
-## Available Codes (updated: 2021-03-21)
+## Available Codes (updated: 2023-01-11)
 
-[Follow this link](CODES.md#available-codes-updated-2021-03-21) to see the complete list of 169 codes.
+[Follow this link](CODES.md) to see the complete list of codes.
 
 ## Related Packages
 

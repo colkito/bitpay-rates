@@ -12,18 +12,18 @@
     "countries",
     "price"
   ],
-  "author": "Mario Colque <dev@marioc.xyz>",
+  "author": "Mario Colque <dev@colkito.com>",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mariocxyz/bitpay-rates.git"
+    "url": "https://github.com/colkito/bitpay-rates.git"
   },
   "bugs": {
-    "url": "https://github.com/mariocxyz/bitpay-rates/issues"
+    "url": "https://github.com/colkito/bitpay-rates/issues"
   },
-  "homepage": "https://github.com/mariocxyz/bitpay-rates#readme",
+  "homepage": "https://github.com/colkito/bitpay-rates#readme",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
