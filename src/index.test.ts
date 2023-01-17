@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import { get } from './index';
+import { get, RateObj } from './index';
 
 describe('Get all rates', () => {
   beforeEach(() => {
@@ -12,13 +12,13 @@ describe('Get all rates', () => {
 
   test('using promises', async () => {
     const rates = await get();
-    expect(typeof rates).toEqual('object');
+    expect(typeof rates).toBe('object');
     expect(Array.isArray(rates)).toBe(true);
   });
 
   test('using callback', () => {
     get((_, rates) => {
-      expect(typeof rates).toEqual('object');
+      expect(typeof rates).toBe('object');
       expect(Array.isArray(rates)).toBe(true);
     });
   });
@@ -41,18 +41,19 @@ describe('Get a rate by code', () => {
   });
 
   test('using promises', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const rate: any = await get(code);
-    expect(typeof rate).toEqual('object');
-    expect(rate.code).toEqual(code);
-    expect(rate.name).toEqual('Argentine Peso');
+    const rate = (await get(code)) as RateObj;
+    expect(typeof rate).toBe('object');
+    expect(rate.code).toBe(code);
+    expect(rate.name).toBe('Argentine Peso');
   });
 
   test('using callback', () => {
-    get(code, (_, rate) => {
-      expect(typeof rate).toEqual('object');
-      expect(rate.code).toEqual(code);
-      expect(rate.name).toEqual('Argentine Peso');
+    get(code, (err, rate) => {
+      const rateObj = rate as RateObj;
+      expect(err).toBe(null);
+      expect(typeof rateObj).toBe('object');
+      expect(rateObj.code).toBe(code);
+      expect(rateObj.name).toBe('Argentine Peso');
     });
   });
 });
