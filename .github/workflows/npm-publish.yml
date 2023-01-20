@@ -20,12 +20,15 @@ jobs:
       # Update version
       - name: Get version from tag
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - run: npm version ${{ env.RELEASE_VERSION }}
-      - run: git config --global user.email "github-actions@colkito.com"
-      - run: git config --global user.name "GitHub Actions"
-      - run: git add package.json
-      - run: git commit -m "Bump version to ${{ env.RELEASE_VERSION }}"
-      - run: git push origin HEAD
+
+      - name: Update version in the code
+        run: |
+          npm version ${{ env.RELEASE_VERSION }} &&
+          git config user.email "github-actions@colkito.com" &&
+          git config user.name "GitHub Actions" &&
+          git add package.json &&
+          git commit -m "Bump version to ${{ env.RELEASE_VERSION }}" &&
+          git push origin HEAD
 
       # Publish package
       - run: npm publish --access public
