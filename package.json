@@ -35,7 +35,8 @@
     "minifyDeclarations": "jsmin -l 3 -o dist/index.d.ts dist/index.d.ts",
     "prepublishOnly": "npm test && npm run lint && npm run build",
     "preversion": "npm run lint",
-    "version": "npm run format && git add -A src"
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "devDependencies": {
     "@types/jest": "^26.0.21",
