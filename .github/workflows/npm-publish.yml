@@ -13,7 +13,21 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+
+      # Install
       - run: yarn install
+
+      # Update version
+      - name: Get version from tag
+        run: echo ::set-env name=NEW_VERSION::$(echo ${GITHUB_REF} | cut -d '/' -f 3)
+      - run: npm version ${{ env.NEW_VERSION }}
+      - run: git config --global user.email "github-actions@colkito.com"
+      - run: git config --global user.name "GitHub Actions"
+      - run: git add package.json
+      - run: git commit -m "Bump version to ${{ env.NEW_VERSION }}"
+      - run: git push origin HEAD
+
+      # Publish package
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
