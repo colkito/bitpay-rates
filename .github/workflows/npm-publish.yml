@@ -19,12 +19,12 @@ jobs:
 
       # Update version
       - name: Get version from tag
-        run: echo ::set-env name=NEW_VERSION::$(echo ${GITHUB_REF} | cut -d '/' -f 3)
-      - run: npm version ${{ env.NEW_VERSION }}
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - run: npm version ${{ env.RELEASE_VERSION }}
       - run: git config --global user.email "github-actions@colkito.com"
       - run: git config --global user.name "GitHub Actions"
       - run: git add package.json
-      - run: git commit -m "Bump version to ${{ env.NEW_VERSION }}"
+      - run: git commit -m "Bump version to ${{ env.RELEASE_VERSION }}"
       - run: git push origin HEAD
 
       # Publish package
