@@ -23,12 +23,12 @@ jobs:
 
       - name: Update version in the code
         run: |
-          npm version ${{ env.RELEASE_VERSION }} &&
-          git config user.email "github@colkito.com" &&
-          git config user.name "colkito" &&
-          git add package.json &&
-          git commit -m "Bump version to ${{ env.RELEASE_VERSION }}" &&
-          git push origin HEAD
+          npm version ${{ env.RELEASE_VERSION }}
+          git config --global user.name "colkito"
+          git config --global user.email "github@colkito.com"
+          git add package.json
+          git commit -am "Bump version to ${{ env.RELEASE_VERSION }}"
+          git push
 
       # Publish package
       - run: npm publish --access public
