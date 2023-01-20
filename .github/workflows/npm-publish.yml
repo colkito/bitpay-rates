@@ -24,8 +24,8 @@ jobs:
       - name: Update version in the code
         run: |
           npm version ${{ env.RELEASE_VERSION }} &&
-          git config user.email "dev@colkito.com" &&
-          git config user.name "GitHub Actions" &&
+          git config user.email "github@colkito.com" &&
+          git config user.name "colkito" &&
           git add package.json &&
           git commit -m "Bump version to ${{ env.RELEASE_VERSION }}" &&
           git push origin HEAD
