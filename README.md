@@ -5,7 +5,7 @@
 
 A lightweight Node.js wrapper for [BitPay's](https://bitpay.com/rates) exchange rates API, now in TypeScript.
 
-Zero-dependency, promise and callback support for easy integration into your project. ✨
+Zero-dependency, `promise` and `callback` support for easy integration into your project. ✨
 
 ## Requirements
 
