@@ -26,6 +26,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           npm version ${{ env.RELEASE_VERSION }}
+          git add -A src package.json
+          git commit -m "Bump version to ${{ env.RELEASE_VERSION }}"
           git push
 
       # Publish package
