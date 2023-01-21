@@ -3,7 +3,7 @@
   "version": "1.2.11",
   "description": "A tiny NodeJS wrapper for the BitPay Rates API",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "bitcoin",
