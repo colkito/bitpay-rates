@@ -24,8 +24,9 @@ jobs:
       - name: Update package version
         run: |
           git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.email "github-actions-bot@github.com"
           npm version ${{ env.RELEASE_VERSION }}
+          git remote set-head origin --auto
           git add -A src package.json
           git commit -m "Bump version to ${{ env.RELEASE_VERSION }}"
           git push
