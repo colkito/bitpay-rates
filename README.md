@@ -1,5 +1,6 @@
 # bitpay-rates
 
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/npm-publish.yml?style=flat-square)
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
