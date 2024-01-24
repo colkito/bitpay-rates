@@ -70,7 +70,7 @@ Successful response:
 
 More examples [here](example/rates-example.js).
 
-## Available Codes (updated: 2023-01-11)
+## Available Codes (updated: 2024-01-24)
 
 [Follow this link](CODES.md) to see the complete list of codes.
 
