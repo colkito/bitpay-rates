@@ -43,12 +43,17 @@ Getting `all` the rates:
 ```js
 import bitpayRates from 'bitpay-rates';
 
-// Using callback
-bitpayRates.get((err, res) => {
-  console.error('Callback Error:', err);
-  console.log('Callback Rates:', res);
-});
+// Using promise
+bitpayRates.get()
+  .then(rates => {
+    console.log(rates);
+  })
+  .catch(err => {
+    console.error(err);
+  });
 ```
+
+•*Note:** The callback parameter for the `get` function is deprecated and will be removed in a future version. Please use promises instead as shown in the examples above.
 
 Successful response:
 

@@ -1,4 +1,4 @@
-import https, { RequestOptions } from 'https';
+import { RequestOptions } from 'https';
 
 export type RateObj = {
   code: string;
@@ -8,8 +8,6 @@ export type RateObj = {
 
 export type RateResponse = RateObj | [RateObj];
 
-export type Callback = (error: Error | null, data?: RateResponse) => void;
-
 const defaultOptions: RequestOptions = {
   host: 'bitpay.com',
   path: '/rates',
@@ -17,38 +15,18 @@ const defaultOptions: RequestOptions = {
   agent: false,
 };
 
-const returnPromise = (options: RequestOptions): Promise<RateResponse> => {
-  return new Promise((resolve, reject) => {
-    returnCallback(options, (err, data) => {
-      if (err) return reject(err);
-      return resolve(data as RateResponse);
-    });
-  });
-};
-
-const returnCallback = (options: RequestOptions, callback: Callback): void => {
-  https
-    .get(options, (res) => {
-      let dataBuffer = '';
-
-      res.on('data', (chunk: Buffer) => {
-        dataBuffer += chunk.toString('utf8');
-      });
-
-      res.on('end', () => {
-        try {
-          const { data } = JSON.parse(dataBuffer);
-          return callback(null, data);
-        } catch (err) {
-          return callback(err as Error);
-        }
-      });
-    })
-    .on('error', (err) => {
-      return callback(err as Error);
-    });
-};
-
+/**
+ * @param {string} [code] - The currency code.
+ * @param {Callback} [callback] - A callback function. (deprecated, use promises instead)
+ * @returns {Promise<RateResponse>} - A promise that resolves to the exchange rate data.
+ * @deprecated The callback parameter is deprecated. Use promises instead.
+ */
+/**
+ * @param {string} [code] - The currency code.
+ * @param {Callback} [callback] - A callback function. (deprecated, use promises instead)
+ * @returns {Promise<RateResponse>} - A promise that resolves to the exchange rate data.
+ * @deprecated The callback parameter is deprecated. Use promises instead.
+ */
 export const get = (
   code?: string | Callback,
   callback?: Callback,
@@ -58,8 +36,10 @@ export const get = (
     options.path += `/${code.toUpperCase()}`;
   }
   if (typeof code === 'function') {
+    console.warn('Warning: Callbacks are deprecated. Use promises instead.');
     return returnCallback(options, code);
   } else if (callback) {
+    console.warn('Warning: Callbacks are deprecated. Use promises instead.');
     return returnCallback(options, callback);
   } else {
     return returnPromise(options);
