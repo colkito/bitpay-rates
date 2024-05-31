@@ -8,6 +8,9 @@ export type RateObj = {
 
 export type RateResponse = RateObj | [RateObj];
 
+/**
+ * @deprecated Callback support will be removed in a future version. Use the Promise-based API instead.
+ */
 export type Callback = (error: Error | null, data?: RateResponse) => void;
 
 const defaultOptions: RequestOptions = {
@@ -26,6 +29,9 @@ const returnPromise = (options: RequestOptions): Promise<RateResponse> => {
   });
 };
 
+/**
+ * @deprecated Callback support will be removed in a future version. Use the Promise-based API instead.
+ */
 const returnCallback = (options: RequestOptions, callback: Callback): void => {
   https
     .get(options, (res) => {
@@ -49,21 +55,12 @@ const returnCallback = (options: RequestOptions, callback: Callback): void => {
     });
 };
 
-export const get = (
-  code?: string | Callback,
-  callback?: Callback,
-): Promise<RateResponse> | void => {
+export const get = (code?: string): Promise<RateResponse> => {
   const options = { ...defaultOptions };
   if (typeof code === 'string') {
     options.path += `/${code.toUpperCase()}`;
   }
-  if (typeof code === 'function') {
-    return returnCallback(options, code);
-  } else if (callback) {
-    return returnCallback(options, callback);
-  } else {
-    return returnPromise(options);
-  }
+  return returnPromise(options);
 };
 
 export default { get };
