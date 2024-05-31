@@ -21,11 +21,25 @@ import bitpayRates from 'bitpay-rates';
 
 const code = 'ARS'; // see list of codes below
 
-// Using promise
+// Using async/await
+try {
+  const rate = await bitpayRates.get(code);
+  console.log(`[Async/Await][${code}] Rate:`, rate);
+} catch (err) {
+  console.error(`[Async/Await][${code}] Error:`, err);
+}
+```
+
+Handling an invalid currency code:
+
+```js
+import bitpayRates from 'bitpay-rates';
+
+// Handling an invalid currency code
 bitpayRates
-  .get(code)
-  .then((rate) => console.log(`[Promise][${code}] Rate:`, rate))
-  .catch((err) => console.error(`[Promise][${code}] Error:`, err));
+  .get('INVALID')
+  .then((rate) => console.log('[Promise][INVALID] Rate:', rate))
+  .catch((err) => console.error('[Promise][INVALID] Error:', err));
 ```
 
 Successful response:
@@ -43,11 +57,13 @@ Getting `all` the rates:
 ```js
 import bitpayRates from 'bitpay-rates';
 
-// Using callback
-bitpayRates.get((err, res) => {
-  console.error('Callback Error:', err);
-  console.log('Callback Rates:', res);
-});
+// Using async/await
+try {
+  const rates = await bitpayRates.get();
+  console.log('Rates:', rates);
+} catch (err) {
+  console.error('Error:', err);
+}
 
 // Handling an invalid currency code
 bitpayRates
