@@ -18,9 +18,9 @@ export type RateObj = {
 
 /**
  * The response from the exchange rates API.
- * Can be a single exchange rate or an array of exchange rates.
+ * An array of exchange rates.
  */
-export type RateResponse = RateObj | [RateObj];
+export type RateResponse = RateObj[];
 
 const defaultOptions: RequestOptions = {
   host: 'bitpay.com',
@@ -41,7 +41,7 @@ const returnPromise = (options: RequestOptions): Promise<RateResponse> => {
 
         res.on('end', () => {
           try {
-            const { data } = JSON.parse(dataBuffer);
+            const { data } = JSON.parse(dataBuffer) as { data: RateObj[] };
             return resolve(data);
           } catch (err) {
             return reject(err as Error);
@@ -54,7 +54,7 @@ const returnPromise = (options: RequestOptions): Promise<RateResponse> => {
   });
 };
 
-export const get = (code?: string): Promise<RateResponse> => {
+export const get = (code?: string): Promise<RateObj[]> => {
   if (typeof code === 'string') {
     defaultOptions.path += `/${code.toUpperCase()}`;
   }
