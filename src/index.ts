@@ -1,14 +1,26 @@
-import https, { RequestOptions } from 'https';
+/**
+ * Import the `RequestOptions` type from the `https` module.
+ * Using `import type` ensures better runtime safety.
+ */
+import type { RequestOptions } from 'https';
 
+/**
+ * Represents an exchange rate for a currency.
+ * @property {string} code - The currency code (e.g. "USD").
+ * @property {string} name - The full name of the currency.
+ * @property {number} rate - The exchange rate for the currency.
+ */
 export type RateObj = {
   code: string;
   name: string;
   rate: number;
 };
 
+/**
+ * The response from the exchange rates API.
+ * Can be a single exchange rate or an array of exchange rates.
+ */
 export type RateResponse = RateObj | [RateObj];
-
-export type Callback = (error: Error | null, data?: RateResponse) => void;
 
 const defaultOptions: RequestOptions = {
   host: 'bitpay.com',
@@ -19,51 +31,34 @@ const defaultOptions: RequestOptions = {
 
 const returnPromise = (options: RequestOptions): Promise<RateResponse> => {
   return new Promise((resolve, reject) => {
-    returnCallback(options, (err, data) => {
-      if (err) return reject(err);
-      return resolve(data as RateResponse);
-    });
+    https
+      .get(options, (res) => {
+        let dataBuffer = '';
+
+        res.on('data', (chunk: Buffer) => {
+          dataBuffer += chunk.toString('utf8');
+        });
+
+        res.on('end', () => {
+          try {
+            const { data } = JSON.parse(dataBuffer);
+            return resolve(data);
+          } catch (err) {
+            return reject(err as Error);
+          }
+        });
+      })
+      .on('error', (err) => {
+        return reject(err as Error);
+      });
   });
 };
 
-const returnCallback = (options: RequestOptions, callback: Callback): void => {
-  https
-    .get(options, (res) => {
-      let dataBuffer = '';
-
-      res.on('data', (chunk: Buffer) => {
-        dataBuffer += chunk.toString('utf8');
-      });
-
-      res.on('end', () => {
-        try {
-          const { data } = JSON.parse(dataBuffer);
-          return callback(null, data);
-        } catch (err) {
-          return callback(err as Error);
-        }
-      });
-    })
-    .on('error', (err) => {
-      return callback(err as Error);
-    });
-};
-
-export const get = (
-  code?: string | Callback,
-  callback?: Callback,
-): Promise<RateResponse> | void => {
-  const options = { ...defaultOptions };
+export const get = (code?: string): Promise<RateResponse> => {
   if (typeof code === 'string') {
-    options.path += `/${code.toUpperCase()}`;
+    defaultOptions.path += `/${code.toUpperCase()}`;
   }
-  if (typeof code === 'function') {
-    return returnCallback(options, code);
-  } else if (callback) {
-    return returnCallback(options, callback);
-  } else {
-    return returnPromise(options);
-  }
+  return returnPromise(defaultOptions);
 };
 
 export default { get };
