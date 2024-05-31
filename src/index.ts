@@ -1,11 +1,25 @@
+/**
+ * Import the `RequestOptions` type from the `https` module.
+ * Using `import type` ensures better runtime safety.
+ */
 import type { RequestOptions } from 'https';
 
+/**
+ * Represents an exchange rate for a currency.
+ * @property {string} code - The currency code (e.g. "USD").
+ * @property {string} name - The full name of the currency.
+ * @property {number} rate - The exchange rate for the currency.
+ */
 export type RateObj = {
   code: string;
   name: string;
   rate: number;
 };
 
+/**
+ * The response from the exchange rates API.
+ * Can be a single exchange rate or an array of exchange rates.
+ */
 export type RateResponse = RateObj | [RateObj];
 
 const defaultOptions: RequestOptions = {

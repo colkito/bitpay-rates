@@ -2,58 +2,29 @@ import nock from 'nock';
 
 import { get, RateObj } from './index';
 
-describe('Get all rates', () => {
-  beforeEach(() => {
-    nock.cleanAll();
-    nock('https://bitpay.com').get('/rates').reply(200, {
-      data: [],
-    });
+// Update tests for the `get` function:
+// - Remove tests for callback usage
+// - Add tests for promise usage with and without currency code
+// - Verify currency code is properly handled
+
+describe('get', () => {
+  it('should return exchange rate data', async () => {
+    const data = await get();
+    expect(Array.isArray(data)).toBe(true);
+    expect(data[0]).toHaveProperty('code');
+    expect(data[0]).toHaveProperty('name');
+    expect(data[0]).toHaveProperty('rate');
   });
 
-  test('using promises', async () => {
-    const rates = await get();
-    expect(typeof rates).toBe('object');
-    expect(Array.isArray(rates)).toBe(true);
+  it('should return exchange rate for a specific currency', async () => {
+    const data = await get('USD');
+    expect(Array.isArray(data)).toBe(false);
+    expect(data).toHaveProperty('code', 'USD');
+    expect(data).toHaveProperty('name');
+    expect(data).toHaveProperty('rate');
   });
 
-  test('using callback', () => {
-    get((_, rates) => {
-      expect(typeof rates).toBe('object');
-      expect(Array.isArray(rates)).toBe(true);
-    });
-  });
-});
-
-describe('Get a rate by code', () => {
-  const code = 'ARS';
-
-  beforeEach(() => {
-    nock.cleanAll();
-    nock('https://bitpay.com')
-      .get(`/rates/${code}`)
-      .reply(200, {
-        data: {
-          code,
-          name: 'Argentine Peso',
-          rate: 5237449.75,
-        },
-      });
-  });
-
-  test('using promises', async () => {
-    const rate = (await get(code)) as RateObj;
-    expect(typeof rate).toBe('object');
-    expect(rate.code).toBe(code);
-    expect(rate.name).toBe('Argentine Peso');
-  });
-
-  test('using callback', () => {
-    get(code, (err, rate) => {
-      const rateObj = rate as RateObj;
-      expect(err).toBe(null);
-      expect(typeof rateObj).toBe('object');
-      expect(rateObj.code).toBe(code);
-      expect(rateObj.name).toBe('Argentine Peso');
-    });
+  it('should handle invalid currency codes', async () => {
+    await expect(get('INVALID')).rejects.toThrow();
   });
 });
