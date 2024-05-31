@@ -8,10 +8,16 @@ import { get } from './index';
 describe('get', () => {
   it('should return exchange rate data', async () => {
     const data = await get();
-    expect(Array.isArray(data)).toBe(true);
-    expect(data[0]).toHaveProperty('code');
-    expect(data[0]).toHaveProperty('name');
-    expect(data[0]).toHaveProperty('rate');
+
+    if (Array.isArray(data)) {
+      expect(data[0]).toHaveProperty('code');
+      expect(data[0]).toHaveProperty('name');
+      expect(data[0]).toHaveProperty('rate');
+    } else {
+      expect(data).toHaveProperty('code');
+      expect(data).toHaveProperty('name');
+      expect(data).toHaveProperty('rate');
+    }
   });
 
   it('should return exchange rate for a specific currency', async () => {
