@@ -49,6 +49,13 @@ const returnCallback = (options: RequestOptions, callback: Callback): void => {
     });
 };
 
+/**
+ * Fetches exchange rate data from the BitPay API.
+ * @param code - The currency code to fetch rates for (optional).
+ * @param callback - A callback function to handle the response (deprecated, use promise return value instead).
+ * @returns A promise that resolves with the exchange rate data, or void if a callback is provided.
+ * @deprecated The callback parameter is deprecated and will be removed in a future version. Use the promise return value instead.
+ */
 export const get = (
   code?: string | Callback,
   callback?: Callback,
@@ -58,8 +65,14 @@ export const get = (
     options.path += `/${code.toUpperCase()}`;
   }
   if (typeof code === 'function') {
+    console.warn(
+      'Warning: Callback support for the `get` function is deprecated and will be removed in a future version. Please use the promise return value instead.',
+    );
     return returnCallback(options, code);
   } else if (callback) {
+    console.warn(
+      'Warning: Callback support for the `get` function is deprecated and will be removed in a future version. Please use the promise return value instead.',
+    );
     return returnCallback(options, callback);
   } else {
     return returnPromise(options);
