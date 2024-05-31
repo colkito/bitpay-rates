@@ -19,13 +19,13 @@ Getting a rate by `code`:
 ```js
 import bitpayRates from 'bitpay-rates';
 
-const code = 'ARS'; // see list of codes bellow
+const code = 'ARS'; // see list of codes below
 
 // Using promise
 bitpayRates
   .get(code)
-  .then((rate) => console.log('Promise Rate:', rate))
-  .catch((err) => console.error('Promise Error:', err));
+  .then((rate) => console.log(`[Promise][${code}] Rate:`, rate))
+  .catch((err) => console.error(`[Promise][${code}] Error:`, err));
 ```
 
 Successful response:
@@ -43,11 +43,11 @@ Getting `all` the rates:
 ```js
 import bitpayRates from 'bitpay-rates';
 
-// Using callback
-bitpayRates.get((err, res) => {
-  console.error('Callback Error:', err);
-  console.log('Callback Rates:', res);
-});
+// Using promise
+bitpayRates
+  .get()
+  .then((rates) => console.log('[Promise][All] Rates:', rates))
+  .catch((err) => console.error('[Promise][All] Error:', err));
 ```
 
 Successful response:
@@ -70,7 +70,7 @@ Successful response:
 
 More examples [here](example/rates-example.js).
 
-## Available Codes (updated: 2024-01-24)
+## Available Codes (updated: 2023-06-09)
 
 [Follow this link](CODES.md) to see the complete list of codes.
 
