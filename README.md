@@ -6,7 +6,7 @@
 
 A lightweight Node.js wrapper for [BitPay's](https://bitpay.com/rates) exchange rates API, now in TypeScript.
 
-Zero-dependency, `promise` and `callback` support for easy integration into your project. ✨
+Zero-dependency and `promise` support for easy integration into your project. ✨
 
 ## Requirements
 
@@ -48,7 +48,7 @@ Successful response:
 {
   "code": "ARS",
   "name": "Argentine Peso",
-  "rate": 3793422.92
+  "rate": 60612542.16
 }
 ```
 
@@ -60,9 +60,9 @@ import bitpayRates from 'bitpay-rates';
 // Using async/await
 try {
   const rates = await bitpayRates.get();
-  console.log('Rates:', rates);
+  console.log('[Async/Await] Rates:', rates);
 } catch (err) {
-  console.error('Error:', err);
+  console.error('[Async/Await] Error:', err);
 }
 
 // Handling an invalid currency code

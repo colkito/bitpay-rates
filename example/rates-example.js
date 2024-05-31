@@ -1,4 +1,4 @@
-import bitpayRates from '../dist';
+const bitpayRates = require('../dist');
 
 const code = 'ARS';
 
