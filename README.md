@@ -19,13 +19,13 @@ Getting a rate by `code`:
 ```js
 import bitpayRates from 'bitpay-rates';
 
-const code = 'ARS'; // see list of codes bellow
+const code = 'ARS'; // see list of codes below
 
 // Using promise
 bitpayRates
   .get(code)
-  .then((rate) => console.log('Promise Rate:', rate))
-  .catch((err) => console.error('Promise Error:', err));
+  .then((rate) => console.log(`[Promise][${code}] Rate:`, rate))
+  .catch((err) => console.error(`[Promise][${code}] Error:`, err));
 ```
 
 Successful response:
@@ -48,6 +48,12 @@ bitpayRates.get((err, res) => {
   console.error('Callback Error:', err);
   console.log('Callback Rates:', res);
 });
+
+// Handling an invalid currency code
+bitpayRates
+  .get('INVALID')
+  .then((rate) => console.log('[Promise][INVALID] Rate:', rate))
+  .catch((err) => console.error('[Promise][INVALID] Error:', err));
 ```
 
 Successful response:
