@@ -90,5 +90,45 @@ export const get = (code?: string): Promise<RateResponse> => {
   });
 };
 
+import fs from 'fs';
+import path from 'path';
+
 // Export the getRate function as the default export
 export default get;
+
+/**
+ * Updates the CODES.md file with the latest currency codes, names, and rates from the provided JSON response.
+ * @param {string} jsonResponse - The JSON response string containing the currency data.
+ */
+export const updateCodes = (jsonResponse: string): void => {
+  // Parse the JSON response into a JavaScript object
+  const { data } = JSON.parse(jsonResponse);
+
+  // Extract the currency code, name, and rate from each object in the data array
+  const currencyEntries = data.map((currency: { code: string; name: string; rate: number }) => {
+    const { code, name } = currency;
+    return `- ${code} (${name})`;
+  });
+
+  // Sort the currency entries alphabetically by currency code
+  const sortedEntries = currencyEntries.sort();
+
+  // Get today's date and format it as "YYYY-MM-DD"
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Read the contents of the CODES.md file
+  const codesFilePath = path.join(__dirname, '..', 'CODES.md');
+  const codesContent = fs.readFileSync(codesFilePath, 'utf8');
+
+  // Replace the existing currency list with the sorted entries and update the "updated" date
+  const updatedContent = codesContent.replace(
+    /## Available Codes[\s\S]*?(?=##)/,
+    `## Available Codes\n\nThis is the complete list of ${sortedEntries.length} codes:\n\n${sortedEntries.join('\n')}\n`
+  ).replace(
+    /updated: \d{4}-\d{2}-\d{2}/,
+    `updated: ${today}`
+  );
+
+  // Write the updated contents back to the CODES.md file
+  fs.writeFileSync(codesFilePath, updatedContent, 'utf8');
+};
