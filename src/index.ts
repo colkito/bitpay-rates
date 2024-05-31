@@ -1,4 +1,4 @@
-import { RequestOptions } from 'https';
+import type { RequestOptions } from 'https';
 
 export type RateObj = {
   code: string;
