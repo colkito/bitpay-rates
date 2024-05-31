@@ -2,7 +2,7 @@
  * Import the `RequestOptions` type from the `https` module.
  * Using `import type` ensures better runtime safety.
  */
-import type { RequestOptions } from 'https';
+import https, { type RequestOptions } from 'https';
 
 /**
  * Represents an exchange rate for a currency.

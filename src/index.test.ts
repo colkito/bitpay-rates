@@ -1,6 +1,4 @@
-import nock from 'nock';
-
-import { get, RateObj } from './index';
+import { get } from './index';
 
 // Update tests for the `get` function:
 // - Remove tests for callback usage
