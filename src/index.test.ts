@@ -1,34 +1,62 @@
 import { get } from './index';
 
-// Update tests for the `get` function:
-// - Remove tests for callback usage
-// - Add tests for promise usage with and without currency code
-// - Verify currency code is properly handled
-
 describe('get', () => {
-  it('should return exchange rate data', async () => {
-    const data = await get();
+  // Promise tests
+  describe('promises', () => {
+    it('should return all exchange rates', async () => {
+      const data = await get();
+      expect(Array.isArray(data)).toBe(true);
+      if (Array.isArray(data)) {
+        expect(data[0]).toHaveProperty('code');
+        expect(data[0]).toHaveProperty('name');
+        expect(data[0]).toHaveProperty('rate');
+      }
+    });
 
-    if (Array.isArray(data)) {
-      expect(data[0]).toHaveProperty('code');
-      expect(data[0]).toHaveProperty('name');
-      expect(data[0]).toHaveProperty('rate');
-    } else {
-      expect(data).toHaveProperty('code');
+    it('should return exchange rate for a specific currency', async () => {
+      const data = await get('USD');
+      expect(Array.isArray(data)).toBe(false);
+      expect(data).toHaveProperty('code', 'USD');
       expect(data).toHaveProperty('name');
       expect(data).toHaveProperty('rate');
-    }
+    });
+
+    it('should handle invalid currency codes', async () => {
+      await expect(get('INVALID')).rejects.toThrow();
+    });
   });
 
-  it('should return exchange rate for a specific currency', async () => {
-    const data = await get('USD');
-    expect(Array.isArray(data)).toBe(false);
-    expect(data).toHaveProperty('code', 'USD');
-    expect(data).toHaveProperty('name');
-    expect(data).toHaveProperty('rate');
-  });
+  // Callback tests
+  describe('callbacks', () => {
+    it('should return all exchange rates via callback', (done) => {
+      get((err, data) => {
+        expect(err).toBeNull();
+        expect(Array.isArray(data)).toBe(true);
+        if (Array.isArray(data)) {
+          expect(data[0]).toHaveProperty('code');
+          expect(data[0]).toHaveProperty('name');
+          expect(data[0]).toHaveProperty('rate');
+        }
+        done();
+      });
+    });
 
-  it('should handle invalid currency codes', async () => {
-    await expect(get('INVALID')).rejects.toThrow();
+    it('should return exchange rate for a specific currency via callback', (done) => {
+      get('USD', (err, data) => {
+        expect(err).toBeNull();
+        expect(Array.isArray(data)).toBe(false);
+        expect(data).toHaveProperty('code', 'USD');
+        expect(data).toHaveProperty('name');
+        expect(data).toHaveProperty('rate');
+        done();
+      });
+    });
+
+    it('should handle invalid currency codes via callback', (done) => {
+      get('INVALID', (err) => {
+        expect(err).toBeInstanceOf(Error);
+        done();
+      });
+    });
   });
 });
