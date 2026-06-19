@@ -4,15 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-bitpay-rates is a lightweight, zero-dependency Node.js wrapper for the BitPay exchange rates API, written in TypeScript. It provides a simple promise-based interface to fetch cryptocurrency exchange rates.
+bitpay-rates is a lightweight, zero-runtime-dependency Node.js wrapper for the BitPay exchange
+rates API, written in TypeScript. It exposes a single promise-based function to fetch
+cryptocurrency exchange rates.
 
 ## Commands
 
 - **Run tests**: `npm test`
 - **Run tests in watch mode**: `npm run test:watch`
-- **Run a single test**: `npx jest src/index.test.ts -t "test name"`
-- **Lint and fix**: `npm run lint`
-- **Format code**: `npm run format`
+- **Run a single test**: `npx tsx --test --test-name-pattern "<name>" src/index.test.ts`
+- **Lint** (types + Biome): `npm run lint`
+- **Format / autofix**: `npm run format`
 - **Build**: `npm run build`
 - **Type check only**: `tsc --noEmit`
 
@@ -20,19 +22,32 @@ bitpay-rates is a lightweight, zero-dependency Node.js wrapper for the BitPay ex
 
 The library is a single-file module (`src/index.ts`) that exports one function:
 
-- `get(code?: string)` - Returns a Promise that resolves to either a single `RateObj` (when a currency code is provided) or an array of `RateObj` (when no code is provided)
+- `get(code?: string)` — Returns a Promise that resolves to a single `RateObj` (when a currency
+  code is provided) or an array of `RateObj` (when no code is provided). The API is
+  **promise-only**; there is no callback interface.
 
-The module uses Node.js native `https` module with a keep-alive agent for performance. No external runtime dependencies.
+It uses Node's native `https` module (no runtime dependencies) and applies a request timeout that
+rejects the promise if BitPay does not respond.
 
 ### Types
 
-- `RateObj` - `{ code: string; name: string; rate: number }`
-- `RateResponse` - `RateObj | RateObj[]`
+- `RateObj` — `{ code: string; name: string; rate: number }`
+- `RateResponse` — `RateObj | RateObj[]`
 
 ### API
 
-The library calls `https://bitpay.com/rates` (or `/rates/{CODE}` for specific currencies). See CODES.md for the full list of 183 supported currency codes.
+The library calls `https://bitpay.com/api/rates` (or `/api/rates/{CODE}` for a specific currency;
+the code is uppercased automatically). See CODES.md for the full list of supported currency codes.
+
+## Tooling
+
+- **Lint + format**: [Biome](https://biomejs.dev) (`biome.json`) replaces ESLint and Prettier.
+- **Tests**: Node's built-in test runner (`node:test`) executed through `tsx`. Network calls are
+  mocked in `src/index.test.ts`, so tests are deterministic and never hit the real API.
+- **Build**: [tsup](https://tsup.egoist.dev) emits a dual ESM + CJS bundle plus declaration files
+  to `dist/`, minified. The `exports` map in `package.json` wires `import`, `require`, and `types`.
 
 ## Build Output
 
-TypeScript compiles to `dist/` and the output is minified using jsmin. Declaration files (`.d.ts`) are also generated and minified.
+`npm run build` produces `dist/index.js` (CJS), `dist/index.mjs` (ESM), and `dist/index.d.ts`.
+Only `dist/**` is published (see the `files` field in `package.json`).

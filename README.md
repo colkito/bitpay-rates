@@ -1,16 +1,22 @@
 # bitpay-rates
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/npm-publish.yml?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/ci.yml?style=flat-square)
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
-A lightweight Node.js wrapper for [BitPay's](https://bitpay.com/rates) exchange rates API, now in TypeScript.
+A lightweight Node.js wrapper for [BitPay's](https://bitpay.com/rates) exchange rates API, written in TypeScript.
 
-Zero-dependency and `promise` support for easy integration into your project. ✨
+Zero runtime dependencies, promise-based, and shipped as dual ESM + CommonJS. ✨
 
 ## Requirements
 
-- nodejs >= 12.x
+- Node.js >= 18
+
+## Breaking changes in v3
+
+- The library is now **promise-only**. The legacy callback signature (`get(code, cb)`) has been
+  removed — use `async/await` or `.then()`/`.catch()` instead.
+- Ships as dual ESM + CJS with an `exports` map (`import` and `require` both work).
 
 ## Examples
 
@@ -64,12 +70,6 @@ try {
 } catch (err) {
   console.error('[Async/Await] Error:', err);
 }
-
-// Handling an invalid currency code
-bitpayRates
-  .get('INVALID')
-  .then((rate) => console.log('[Promise][INVALID] Rate:', rate))
-  .catch((err) => console.error('[Promise][INVALID] Error:', err));
 ```
 
 Successful response:
