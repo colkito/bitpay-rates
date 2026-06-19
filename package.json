@@ -44,11 +44,11 @@
     "postversion": "git push && git push --tags"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0",
-    "@types/node": "^22.10.2",
-    "tsup": "^8.3.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "@biomejs/biome": "2.5.0",
+    "@types/node": "22.19.21",
+    "tsup": "8.5.1",
+    "tsx": "4.22.4",
+    "typescript": "5.9.3"
   },
   "files": [
     "dist/**/*"
