@@ -10,7 +10,7 @@ Zero runtime dependencies, promise-based, and shipped as dual ESM + CommonJS. âœ
 
 ## Requirements
 
-- Node.js >= 18
+- Node.js >= 20
 
 ## Breaking changes in v3
 

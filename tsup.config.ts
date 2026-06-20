@@ -6,5 +6,5 @@ export default defineConfig({
   dts: true,
   clean: true,
   minify: true,
-  target: 'node18',
+  target: 'node20',
 });
