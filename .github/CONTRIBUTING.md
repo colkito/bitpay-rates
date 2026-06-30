@@ -63,7 +63,15 @@ Publishing the release fires `npm-publish.yml`:
 - **npm Trusted Publisher**: on npmjs.com → package → Settings → Trusted
   Publisher, add this GitHub repo + the `npm-publish.yml` workflow. No
   `NPM_TOKEN` secret is needed once this is configured.
-- **`RELEASE_PLEASE_TOKEN`** (optional but recommended): a fine-grained PAT or
-  GitHub App token with `contents: write` + `pull_requests: write`, so the
-  release PR triggers CI. Without it, the release PR is bot-authored and CI is
-  suppressed on it.
+- **Release-please token** (optional but recommended), so the release PR
+  triggers CI — without it the PR is bot-authored and CI is suppressed on it.
+  The workflow picks the first available, in order:
+  1. **GitHub App (preferred — Option C):** create an App with `Contents: RW`
+     and `Pull requests: RW`, install it on this repo, then set the repo
+     **variable** `RELEASE_PLEASE_APP_ID` and the **secret**
+     `RELEASE_PLEASE_APP_PRIVATE_KEY`. The workflow mints a short-lived token
+     per run (nothing long-lived to rotate).
+  2. **PAT fallback:** a fine-grained PAT with `contents: write` +
+     `pull_requests: write`, stored as the secret `RELEASE_PLEASE_TOKEN`.
+  3. **Nothing configured:** falls back to `GITHUB_TOKEN` (CI won't run on the
+     release PR).
