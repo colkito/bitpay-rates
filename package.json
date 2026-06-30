@@ -1,9 +1,9 @@
 {
   "name": "bitpay-rates",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A tiny Node.js wrapper for the BitPay Rates API",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "keywords": [
     "bitcoin",
@@ -14,8 +14,17 @@
   ],
   "author": "Mario Colque <dev@colkito.com>",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/colkito/bitpay-rates.git"
@@ -25,29 +34,19 @@
   },
   "homepage": "https://github.com/colkito/bitpay-rates#readme",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tsc --noEmit && eslint \"src/**/*.ts\"",
-    "prepublishOnly": "npm test && npm run lint && npm run build",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src package.json",
-    "postversion": "git push && git push --tags"
+    "test": "tsx --test src/index.test.ts",
+    "test:watch": "tsx --test --watch src/index.test.ts",
+    "lint": "tsc --noEmit && biome check",
+    "format": "biome check --write",
+    "build": "tsup",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.6.0",
-    "@typescript-eslint/eslint-plugin": "^8.58.2",
-    "@typescript-eslint/parser": "^8.58.2",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "jest": "^30.3.0",
-    "prettier": "^3.8.3",
-    "ts-jest": "^29.4.9",
-    "typescript": "^6.0.2"
+    "@biomejs/biome": "2.5.0",
+    "@types/node": "22.19.21",
+    "tsup": "8.5.1",
+    "tsx": "4.22.4",
+    "typescript": "5.9.3"
   },
   "files": [
     "dist/**/*"

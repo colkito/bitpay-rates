@@ -1,43 +1,42 @@
-import https from 'https';
-import { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'node:http';
+import https from 'node:https';
 
 export type RateObj = { code: string; name: string; rate: number };
 export type RateResponse = RateObj | RateObj[];
-export type Callback = (err: Error | null, data?: RateResponse) => void;
 
-export function get(code?: string): Promise<RateResponse>;
-export function get(code: string, cb: Callback): void;
-export function get(cb: Callback): void;
-export function get(codeOrCb?: string | Callback, cb?: Callback): Promise<RateResponse> | void {
-  const code = typeof codeOrCb === 'string' ? codeOrCb : undefined;
-  const callback = typeof codeOrCb === 'function' ? codeOrCb : cb;
+const REQUEST_TIMEOUT_MS = 10_000;
 
-  const p = new Promise<RateResponse>((resolve, reject) => {
-    https
-      .get(
-        `https://bitpay.com/api/rates${code ? `/${code.toUpperCase()}` : ''}`,
-        (res: IncomingMessage) => {
-          let d = '';
-          res.on('data', (c: Buffer) => (d += c));
-          res.on('end', () => {
-            try {
-              const json = JSON.parse(d);
-              if (json.error) reject(new Error(json.error));
-              else resolve(json.data ?? json);
-            } catch (e) {
-              reject(e);
-            }
-          });
-        },
-      )
-      .on('error', reject);
+/**
+ * Fetch BitPay exchange rates.
+ *
+ * @param code - Optional ISO currency code (e.g. `'USD'`). See CODES.md.
+ * @returns A single {@link RateObj} when `code` is provided, otherwise an array of all rates.
+ */
+export function get(code?: string): Promise<RateResponse> {
+  const url = `https://bitpay.com/api/rates${code ? `/${code.toUpperCase()}` : ''}`;
+
+  return new Promise<RateResponse>((resolve, reject) => {
+    const req = https.get(url, (res: IncomingMessage) => {
+      let body = '';
+      res.on('data', (chunk: Buffer) => {
+        body += chunk;
+      });
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(body);
+          if (json.error) reject(new Error(json.error));
+          else resolve(json.data ?? json);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+
+    req.on('error', reject);
+    req.setTimeout(REQUEST_TIMEOUT_MS, () => {
+      req.destroy(new Error(`Request to ${url} timed out after ${REQUEST_TIMEOUT_MS}ms`));
+    });
   });
-
-  if (callback) {
-    p.then((data) => callback(null, data)).catch((err) => callback(err));
-  } else {
-    return p;
-  }
 }
 
 export default get;

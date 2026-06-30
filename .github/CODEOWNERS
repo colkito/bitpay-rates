@@ -1,0 +1,8 @@
+# Changes to CI/CD, release config, and build tooling should be reviewed by the
+# maintainer. (Enforced only if "require review from Code Owners" is enabled on
+# the branch ruleset.)
+/.github/        @colkito
+/release-please-config.json   @colkito
+/.release-please-manifest.json @colkito
+/tsup.config.ts  @colkito
+/biome.json      @colkito
