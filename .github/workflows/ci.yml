@@ -31,12 +31,18 @@ jobs:
       # never drift from it.
       - run: npm run verify
       - run: npm audit --audit-level=high
+      # Types across every resolution mode. Kept out of `verify` and out of
+      # devDependencies: it pulls 56 packages and needs network.
+      - run: npx --yes @arethetypeswrong/cli@0.18.5 --pack .
 
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         # 22 = maintenance LTS, 24 = active LTS, 26 = current.
+        # These names become the check names (`test (22)`, …) that branch
+        # protection requires. Changing this list without updating the required
+        # checks leaves one that can never report and blocks every PR.
         node-version: [22, 24, 26]
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0

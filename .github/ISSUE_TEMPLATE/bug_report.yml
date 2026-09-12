@@ -47,7 +47,7 @@ body:
       placeholder: |
         import { get } from 'bitpay-rates';
 
-        console.log(await get('ARS'));
+        console.log(await get({ quote: 'ARS' }));
     validations:
       required: true
 

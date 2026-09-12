@@ -33,6 +33,12 @@ for (const [style, value] of checks) {
 assert.equal(esm.get, esm.default?.get, 'ESM named and default export disagree');
 assert.equal(cjs.get, cjs.default?.get, 'CJS named and default export disagree');
 
+// The default export must stay a namespace object. Reverting it to the bare
+// function would silently break `bitpayRates.get()` in ESM.
+assert.notEqual(typeof esm.default, 'function', 'ESM default export must not be callable');
+assert.notEqual(typeof cjs.default, 'function', 'CJS default export must not be callable');
+console.log('✔ default export is a namespace object, not the function');
+
 // No request may leave the process for an invalid code.
-await assert.rejects(esm.get('../../api/rates'), TypeError);
+await assert.rejects(esm.get({ quote: '../../api/rates' }), TypeError);
 console.log('✔ invalid codes reject before any request');

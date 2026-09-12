@@ -198,3 +198,7 @@ This is the complete list of 194 codes from `GET /rates/BTC`:
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
+
+Codes containing `_` (chain-specific variants such as `USDC_arb`) appear in
+this table but BitPay rejects them as a `base` or `quote`, so `get()` cannot
+query them individually.

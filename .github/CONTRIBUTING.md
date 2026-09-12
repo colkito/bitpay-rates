@@ -15,9 +15,10 @@ All changes land through pull requests:
 2. Open a PR against `main` using [Conventional Commits](https://www.conventionalcommits.org/)
    (`feat:`, `fix:`, `chore:`, …) — release-please derives the version bump and
    changelog from them.
-3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (`npm run verify`
-   + `npm audit`), a `test` job across Node 22/24/26, and a `workflows` job
-   (zizmor, no GitHub code scanning).
+3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (`npm run verify`,
+   plus the two network-dependent checks `npm audit` and
+   `@arethetypeswrong/cli`), a `test` job across Node 22/24/26, and a
+   `workflows` job (zizmor, no GitHub code scanning).
 4. A **human** reviews and merges. Merging is the human authorization step.
 
 Agents: follow `AGENTS.md`. Never push `main`, merge, publish a GitHub Release,
@@ -113,7 +114,10 @@ Already configured:
   protection** are on. Dependabot alerts and security updates are on.
 - **Environment `npm-publish`** with required reviewers, so the Trusted
   Publisher can name it and the deploy has a second human gate.
-- **No repository secrets.** Publishing uses OIDC; there is no `NPM_TOKEN`.
+- **No repository secrets today.** Publishing uses OIDC, so there is no
+  `NPM_TOKEN`. The only secret this repo can ever need is
+  `RELEASE_PLEASE_APP_PRIVATE_KEY` (or `RELEASE_PLEASE_TOKEN`), and only if you
+  enable the optional release-please App or PAT described below.
 
 Still to keep in mind:
 

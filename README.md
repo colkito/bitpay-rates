@@ -23,14 +23,16 @@ npm install bitpay-rates
 
 - **Promise-only.** The legacy callback signature (`get(code, cb)`) is gone —
   use `async/await` or `.then()` / `.catch()`.
+- **Named arguments.** `get()` now takes a single `{ base, quote }` object, so
+  there is no argument order to remember: `get('USD', 'ETH')` becomes
+  `get({ base: 'ETH', quote: 'USD' })`.
+- `get({ base })` returns the **whole table** for that base, which v2 could not
+  express. `get({ quote })` returns that one rate against BTC.
 - Dual ESM + CJS with an `exports` map (`import` and `require` both work).
 - Node.js >= 22.
 - Requests time out after 10 seconds.
-- `get('ETH')` (and other crypto codes) now returns the **single** BTC/quote
-  rate, not the full table for that asset as a base. Use `get('USD', 'ETH')`
-  for a non-BTC pair.
 - Currency codes are validated (`/^[A-Z0-9]{2,10}$/`); anything else rejects
-  with a `TypeError` instead of being sent to the API.
+  with a `TypeError` before a request is made.
 
 ## Usage
 
@@ -39,33 +41,39 @@ npm install bitpay-rates
 ```ts
 import { get, type RateObj } from 'bitpay-rates';
 
-const usd: RateObj = await get('USD');
-// GET https://bitpay.com/rates/BTC/USD
-// { code: 'USD', name: 'US Dollar', rate: 76471.42 }
+const all: RateObj[] = await get();
+// GET /rates/BTC  → every rate against BTC
 
-const all = await get();
-// GET https://bitpay.com/rates/BTC  → RateObj[]
+const vsEth: RateObj[] = await get({ base: 'ETH' });
+// GET /rates/ETH  → every rate against ETH
 
-const ethUsd = await get('USD', 'ETH');
-// GET https://bitpay.com/rates/ETH/USD
+const usd: RateObj = await get({ quote: 'USD' });
+// GET /rates/BTC/USD  → { code: 'USD', name: 'US Dollar', rate: 76471.42 }
+
+const ethUsd: RateObj = await get({ base: 'ETH', quote: 'USD' });
+// GET /rates/ETH/USD
 ```
 
-The default export is a namespace object holding the same function, so the
-v2 style keeps working:
+`base` is the cryptocurrency you are pricing (default `BTC`); `quote` is the
+currency you want the price in. Omitting `quote` gives the full table. The
+return type follows from that: `RateObj[]` without `quote`, `RateObj` with it.
+
+The default export is a namespace object holding the same function, so the v2
+import style keeps working:
 
 ```ts
 import bitpayRates from 'bitpay-rates';
 
-const usd = await bitpayRates.get('USD');
+const usd = await bitpayRates.get({ quote: 'USD' });
 ```
 
 ### CommonJS
 
 ```js
 const { get } = require('bitpay-rates');
-// or: const bitpayRates = require('bitpay-rates'); bitpayRates.get('USD')
+// or: const bitpayRates = require('bitpay-rates'); bitpayRates.get({ quote: 'USD' })
 
-get('USD')
+get({ quote: 'USD' })
   .then((rate) => console.log(rate))
   .catch((err) => console.error(err));
 ```
@@ -80,10 +88,15 @@ malformed JSON, a network failure, or when the request exceeds 10 seconds. It
 rejects with a `TypeError` — before any request — when a code is not 2-10
 alphanumeric characters.
 
+It also rejects when the response shape does not match what you asked for.
+`GET /rates/{code}` is polymorphic: a base with a rate table answers with a
+list, anything else answers with a single rate. So `get({ base: 'USD' })`
+rejects rather than handing you a `RateObj` typed as `RateObj[]`.
+
 ```js
 import { get } from 'bitpay-rates';
 
-get('INVALID')
+get({ quote: 'INVALID' })
   .then((rate) => console.log(rate))
   .catch((err) => console.error(err));
 ```
@@ -95,20 +108,22 @@ More examples in [`example/rates-example.mjs`](example/rates-example.mjs)
 
 ```ts
 type RateObj = { code: string; name: string; rate: number };
-type RateResponse = RateObj | RateObj[];
+type RateQuery = { base?: string; quote?: string };
 
 function get(): Promise<RateObj[]>;
-function get(quote: string): Promise<RateObj>;
-function get(quote: string, base: string): Promise<RateObj>;
+function get(query: { base?: string; quote?: undefined }): Promise<RateObj[]>;
+function get(query: { base?: string; quote: string }): Promise<RateObj>;
 ```
 
-`quote` and `base` are uppercased automatically and must match
-`/^[A-Z0-9]{2,10}$/`. Default `base` is `BTC`.
+Both codes are uppercased automatically and must match `/^[A-Z0-9]{2,10}$/`.
+Default `base` is `BTC`.
 
 ## Available codes
 
 See [CODES.md](CODES.md). It is regenerated from `GET /rates/BTC` on every
-release PR (`npm run update-codes`).
+release PR (`npm run update-codes`). Codes containing `_` (chain-specific
+variants such as `USDC_arb`) appear in that table, but BitPay rejects them as a
+`base` or `quote`, so they cannot be queried individually.
 
 ## Security
 

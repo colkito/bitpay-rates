@@ -23,8 +23,9 @@ package supports, not the newest one we develop on.
 ## Commands
 
 **Before opening a PR, run `npm run verify`.** It is lint + knip + tests +
-build + packaging smoke test, and it is literally the command CI runs — if it
-passes locally, the `quality` job passes too.
+build + packaging smoke test, and it is literally the command CI runs. The
+`quality` job adds two checks that need network and therefore do not belong in
+the inner loop: `npm audit` and `@arethetypeswrong/cli`.
 
 - **Test**: `npm test`
 - **Test watch**: `npm run test:watch`
@@ -36,11 +37,15 @@ passes locally, the `quality` job passes too.
 - **Build**: `npm run build`
 - **Packaging check**: `npm run smoke` (needs a build first)
 - **Refresh CODES.md**: `npm run update-codes` (hits the live BitPay API).
-  Release-please also runs this on the release PR — do not hand-edit CODES.md.
+  Release-please owns this file: it runs on the release PR. Do not run it on a
+  feature PR and do not hand-edit CODES.md.
 - **Type check only**: `tsc --noEmit`
 
-Do not edit `dist/` or `package-lock.json` by hand. Use `npm ci` or
-`npm install --save-exact --save-dev <pkg>@<version>`.
+Do not edit `dist/` or `package-lock.json` by hand; run `npm ci`.
+
+**Adding a dependency needs human approval.** `npm install` is deliberately not
+pre-approved: propose the package and the reason in the PR first, then install
+it with `npm install --save-exact --save-dev <pkg>@<version>`.
 
 `prepare` ends in `|| true` on purpose: lefthook exits 1 without a `.git`
 directory, which would otherwise break `npm ci` in a checkout with no git
@@ -53,26 +58,42 @@ directly — there is no TypeScript runner in the dependency tree.
 
 ```ts
 get(): Promise<RateObj[]>
-get(quote: string): Promise<RateObj>
-get(quote: string, base: string): Promise<RateObj>
+get(query: { base?: string; quote?: undefined }): Promise<RateObj[]>
+get(query: { base?: string; quote: string }): Promise<RateObj>
 ```
+
+One named argument object, deliberately — there is no parameter order to get
+wrong. The third overload's `quote?: undefined` is **load-bearing**: without it
+TypeScript resolves `get(someVariable)` to the array overload and the declared
+return type lies.
 
 `get` is the named export; the default export is a namespace object `{ get }`,
 so `import bitpayRates` / `require(...)` + `bitpayRates.get()` keeps working.
 **Do not change either export shape** — `scripts/smoke.mts` asserts all four
 import styles against `dist/` in CI and before every publish.
 
-- `get()` → `GET https://bitpay.com/rates/BTC` (all quotes vs BTC)
-- `get('USD')` → `GET https://bitpay.com/rates/BTC/USD`
-- `get('USD', 'ETH')` → `GET https://bitpay.com/rates/ETH/USD`
+- `get()` → `GET /rates/BTC` → every rate vs BTC
+- `get({ base: 'ETH' })` → `GET /rates/ETH` → every rate vs ETH
+- `get({ quote: 'USD' })` → `GET /rates/BTC/USD` → one rate
+- `get({ base: 'ETH', quote: 'USD' })` → `GET /rates/ETH/USD` → one rate
 
-Always send `X-Accept-Version: 2.0.0` and `Accept: application/json`. Unwrap
-`{ data }`. Reject on `{ error }`, non-2xx, malformed JSON, or a 10s timeout
-(`AbortController` + `setTimeout`).
+Always send `X-Accept-Version: 2.0.0`, `Accept: application/json` and
+`User-Agent: bitpay-rates`. Unwrap `{ data }`. Reject on `{ error }`, non-2xx,
+malformed JSON, or a 10s timeout (`AbortController` + `setTimeout`).
 
-`quote` and `base` are uppercased and must match `/^[A-Z0-9]{2,10}$/`; anything
+`base` and `quote` are uppercased and must match `/^[A-Z0-9]{2,10}$/`; anything
 else rejects with a `TypeError` before a request is made, so caller input can
-never steer the URL to another path on bitpay.com.
+never steer the URL to another path on bitpay.com. The 18 codes containing `_`
+(`USDC_arb`, `MATIC_e`, …) are listed by `/rates/BTC` but BitPay rejects them
+as a base or quote, so the pattern costs nothing.
+
+`GET /rates/{code}` is polymorphic — `/rates/BTC` is a list, `/rates/USD` is a
+single BTC/USD rate. The response shape is therefore checked against what was
+asked for, so the declared return type cannot lie.
+
+`Promise.race` subscribes to both promises, so the aborted fetch's later
+rejection is handled and discarded. Verified: it produces no unhandled
+rejection. Do not "fix" it.
 
 Uses native `fetch`. No runtime dependencies.
 
@@ -97,6 +118,10 @@ Public page: https://www.bitpay.com/exchange-rates
 - **Hooks**: lefthook (`lefthook.yml`) — Biome on staged files, Conventional
   Commits on `commit-msg`.
 - **Dead code**: knip
+- **Types across resolvers**: CI runs `@arethetypeswrong/cli` against the packed
+  tarball. It is not a devDependency (it would add 56 packages) and is not part
+  of `verify`, so run it by hand if you touch `exports`, `main` or `types`:
+  `npx --yes @arethetypeswrong/cli@0.18.5 --pack .`
 - **Packaging**: `scripts/smoke.mts` loads `dist/` through both entry points and
   asserts every documented import style. Type checks and unit tests only see
   `src/`, so this is the only thing that catches a broken `exports` map or
@@ -128,6 +153,9 @@ not work around them — fix the cause and say so in the PR:
   in `allowScripts` (`.npmrc` → `strict-allow-scripts`).
 - `npm run smoke` fails when the built artifact stops matching the documented
   import styles.
+
+Agents may stage and commit locally, but **pushing is a human step** — ask for
+it rather than working around the deny rule.
 
 Use [Conventional Commits](https://www.conventionalcommits.org/)
 (`feat:`, `fix:`, `chore:`, `ci:`, `docs:`, …). Breaking changes need a
