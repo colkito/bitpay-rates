@@ -34,7 +34,8 @@ jobs:
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org/
-          cache: npm
+          # Do not restore the Actions cache on a publish job (cache poisoning).
+          package-manager-cache: false
 
       - run: npm ci
 
