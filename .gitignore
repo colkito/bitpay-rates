@@ -1,6 +1,7 @@
 dist
 node_modules
 coverage
+lefthook-local.yml
 
 # Logs
 logs

@@ -1,0 +1,16 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{ts,mts,js,mjs,json}"
+      exclude:
+        - package-lock.json
+      run: npx biome check --write --no-errors-on-unmatched {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    conventional:
+      run: |
+        head -n1 {1} | grep -qE '^(feat|fix|chore|ci|docs|test|refactor|perf|style|build|revert)(\([a-z0-9._-]+\))?!?: .+' \
+          || { echo 'Commit message must use Conventional Commits (feat:, fix:, chore:, …)'; exit 1; }

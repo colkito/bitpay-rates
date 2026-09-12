@@ -1,101 +1,102 @@
 # bitpay-rates
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/ci.yml?style=flat-square)
+[![npm](https://img.shields.io/npm/v/bitpay-rates.svg?style=flat-square)](https://www.npmjs.com/package/bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 [![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
-A lightweight Node.js wrapper for [BitPay's](https://bitpay.com/rates) exchange rates API, written in TypeScript.
+A lightweight Node.js wrapper for [BitPay exchange rates](https://www.bitpay.com/exchange-rates), written in TypeScript.
 
-Zero runtime dependencies, promise-based, and shipped as dual ESM + CommonJS. ✨
+Zero runtime dependencies, promise-based, dual ESM + CommonJS. Talks to the
+official public [Rates API](https://developer.bitpay.com/reference/rates)
+(`X-Accept-Version: 2.0.0`).
 
 ## Requirements
 
 - Node.js >= 20
 
+```bash
+npm install bitpay-rates
+```
+
 ## Breaking changes in v3
 
-- The library is now **promise-only**. The legacy callback signature (`get(code, cb)`) has been
-  removed — use `async/await` or `.then()`/`.catch()` instead.
-- Ships as dual ESM + CJS with an `exports` map (`import` and `require` both work).
+- **Promise-only.** The legacy callback signature (`get(code, cb)`) is gone —
+  use `async/await` or `.then()` / `.catch()`.
+- Dual ESM + CJS with an `exports` map (`import` and `require` both work).
+- Node.js >= 20.
+- Requests time out after 10 seconds.
+- `get('ETH')` (and other crypto codes) now returns the **single** BTC/quote
+  rate, not the full table for that asset as a base. Use `get('USD', 'ETH')`
+  for a non-BTC pair.
 
-## Examples
+## Usage
 
-Getting a rate by `code`:
+### ESM / TypeScript
 
-```js
-import bitpayRates from 'bitpay-rates';
+```ts
+import bitpayRates, { type RateObj } from 'bitpay-rates';
 
-const code = 'ARS'; // see list of codes below
+const usd: RateObj = await bitpayRates.get('USD');
+// GET https://bitpay.com/rates/BTC/USD
+// { code: 'USD', name: 'US Dollar', rate: 76471.42 }
 
-// Using async/await
-try {
-  const rate = await bitpayRates.get(code);
-  console.log(`[Async/Await][${code}] Rate:`, rate);
-} catch (err) {
-  console.error(`[Async/Await][${code}] Error:`, err);
-}
+const all = await bitpayRates.get();
+// GET https://bitpay.com/rates/BTC  → RateObj[]
+
+const ethUsd = await bitpayRates.get('USD', 'ETH');
+// GET https://bitpay.com/rates/ETH/USD
 ```
 
-Handling an invalid currency code:
+### CommonJS
+
+```js
+const bitpayRates = require('bitpay-rates');
+
+bitpayRates
+  .get('USD')
+  .then((rate) => console.log(rate))
+  .catch((err) => console.error(err));
+```
+
+### Errors
+
+`get()` rejects when BitPay returns a non-2xx status, an `{ error }` payload,
+malformed JSON, a network failure, or when the request exceeds 10 seconds.
 
 ```js
 import bitpayRates from 'bitpay-rates';
 
-// Handling an invalid currency code
 bitpayRates
   .get('INVALID')
-  .then((rate) => console.log('[Promise][INVALID] Rate:', rate))
-  .catch((err) => console.error('[Promise][INVALID] Error:', err));
+  .then((rate) => console.log(rate))
+  .catch((err) => console.error(err));
 ```
 
-Successful response:
+More examples in [`example/rates-example.mjs`](example/rates-example.mjs)
+(run `npm run build` first).
 
-```json
-{
-  "code": "ARS",
-  "name": "Argentine Peso",
-  "rate": 60612542.16
-}
+## Types
+
+```ts
+type RateObj = { code: string; name: string; rate: number };
+
+function get(): Promise<RateObj[]>;
+function get(quote: string): Promise<RateObj>;
+function get(quote: string, base: string): Promise<RateObj>;
 ```
 
-Getting `all` the rates:
+`quote` and `base` are uppercased automatically. Default `base` is `BTC`.
 
-```js
-import bitpayRates from 'bitpay-rates';
+## Available codes
 
-// Using async/await
-try {
-  const rates = await bitpayRates.get();
-  console.log('[Async/Await] Rates:', rates);
-} catch (err) {
-  console.error('[Async/Await] Error:', err);
-}
-```
+See [CODES.md](CODES.md). It is regenerated from `GET /rates/BTC` on every
+release PR (`npm run update-codes`).
 
-Successful response:
+## Contributing
 
-```json
-[
-  {
-    "code": "ARS",
-    "name": "Argentine Peso",
-    "rate": 5291987.02
-  },
-  {
-    "code": "BUSD",
-    "name": "Binance USD",
-    "rate": 57818.28
-  },
-  {...}
-]
-```
+PRs only — see [CONTRIBUTING.md](.github/CONTRIBUTING.md). MIT licensed.
 
-More examples [here](example/rates-example.js).
-
-## Available Codes (updated: 2024-01-24)
-
-[Follow this link](CODES.md) to see the complete list of codes.
-
-## Related Packages
+## Related packages
 
 - [Blockchain Exchange Rates API](https://npmjs.com/blockchain-rates)

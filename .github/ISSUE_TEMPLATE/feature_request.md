@@ -1,20 +1,19 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an idea for bitpay-rates
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
-
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Problem**
+What is missing or awkward today?
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Proposal**
+What should the library do instead?
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Alternatives**
+Other approaches you considered.
 
 **Additional context**
-Add any other context or screenshots about the feature request here.
+Use cases, related BitPay API docs, or examples.

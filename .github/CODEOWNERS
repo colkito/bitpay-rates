@@ -1,8 +1,9 @@
 # Changes to CI/CD, release config, and build tooling should be reviewed by the
-# maintainer. (Enforced only if "require review from Code Owners" is enabled on
-# the branch ruleset.)
+# maintainer. Advisory unless you enable "require review from Code Owners" on
+# branch protection (available on public GitHub Free; not required).
 /.github/        @colkito
 /release-please-config.json   @colkito
 /.release-please-manifest.json @colkito
-/tsup.config.ts  @colkito
+/tsdown.config.mts @colkito
+/lefthook.yml    @colkito
 /biome.json      @colkito

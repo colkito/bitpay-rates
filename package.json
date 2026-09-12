@@ -1,6 +1,6 @@
 {
   "name": "bitpay-rates",
-  "version": "3.0.0",
+  "version": "2.0.0",
   "description": "A tiny Node.js wrapper for the BitPay Rates API",
   "engines": {
     "node": ">=20"
@@ -15,14 +15,19 @@
   "author": "Mario Colque <dev@colkito.com>",
   "license": "MIT",
   "type": "commonjs",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.cts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "repository": {
@@ -34,21 +39,39 @@
   },
   "homepage": "https://github.com/colkito/bitpay-rates#readme",
   "scripts": {
-    "test": "tsx --test src/index.test.ts",
-    "test:watch": "tsx --test --watch src/index.test.ts",
+    "test": "tsx --test src/index.test.ts scripts/codes-markdown.test.ts",
+    "test:watch": "tsx --test --watch src/index.test.ts scripts/codes-markdown.test.ts",
     "lint": "tsc --noEmit && biome check",
     "format": "biome check --write",
-    "build": "tsup",
+    "build": "tsdown",
+    "knip": "knip",
+    "update-codes": "tsx scripts/update-codes.ts",
+    "prepare": "lefthook install",
     "prepublishOnly": "npm run build"
+  },
+  "knip": {
+    "rules": {
+      "duplicates": "off"
+    },
+    "ignore": [
+      "example/**"
+    ]
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.0",
     "@types/node": "22.19.21",
-    "tsup": "8.5.1",
+    "knip": "6.35.1",
+    "lefthook": "2.1.12",
+    "tsdown": "0.23.0",
     "tsx": "4.22.4",
     "typescript": "5.9.3"
   },
+  "sideEffects": false,
   "files": [
-    "dist/**/*"
-  ]
+    "dist"
+  ],
+  "allowScripts": {
+    "lefthook@2.1.12": true,
+    "esbuild@0.28.1": true
+  }
 }
