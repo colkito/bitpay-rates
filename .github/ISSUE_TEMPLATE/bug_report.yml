@@ -1,0 +1,68 @@
+name: Bug report
+description: Report a problem with bitpay-rates
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do **not** report a security vulnerability here — use a
+        [private security advisory](https://github.com/colkito/bitpay-rates/security/advisories/new).
+
+  - type: input
+    id: version
+    attributes:
+      label: bitpay-rates version
+      placeholder: 3.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      description: Run `node -v`. This package requires Node >= 22.
+      placeholder: v24.21.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module-system
+    attributes:
+      label: How do you import it?
+      options:
+        - ESM — import { get } from 'bitpay-rates'
+        - ESM — import bitpayRates from 'bitpay-rates'
+        - CommonJS — require('bitpay-rates')
+        - TypeScript
+        - Other / not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: The smallest snippet that shows the problem. Rendered as JavaScript.
+      render: javascript
+      placeholder: |
+        import { get } from 'bitpay-rates';
+
+        console.log(await get('ARS'));
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect, and what happened instead?
+      description: Include the full error message or stack trace if there is one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: OS, bundler, runtime (Deno/Bun/edge), HTTP status — whatever is relevant.
+    validations:
+      required: false

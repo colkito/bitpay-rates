@@ -16,7 +16,6 @@
   "license": "MIT",
   "type": "commonjs",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.cts",
   "exports": {
     ".": {
@@ -39,21 +38,20 @@
   },
   "homepage": "https://github.com/colkito/bitpay-rates#readme",
   "scripts": {
+    "verify": "npm run lint && npm run knip && npm test && npm run build && npm run smoke",
     "test": "node --test src/index.test.mts scripts/codes-markdown.test.mts",
     "test:watch": "node --test --watch src/index.test.mts scripts/codes-markdown.test.mts",
     "test:coverage": "node --test --experimental-test-coverage src/index.test.mts scripts/codes-markdown.test.mts",
     "lint": "tsc --noEmit && biome check",
     "format": "biome check --write",
-    "build": "tsdown",
     "knip": "knip",
+    "build": "tsdown",
+    "smoke": "node scripts/smoke.mts",
     "update-codes": "node scripts/update-codes.mts",
-    "prepare": "lefthook install",
-    "prepublishOnly": "npm run build"
+    "prepare": "lefthook install || true",
+    "prepublishOnly": "npm run build && npm run smoke"
   },
   "knip": {
-    "rules": {
-      "duplicates": "off"
-    },
     "ignore": [
       "example/**"
     ]
@@ -64,7 +62,7 @@
     "knip": "6.35.1",
     "lefthook": "2.1.12",
     "tsdown": "0.23.0",
-    "typescript": "5.9.3"
+    "typescript": "7.0.2"
   },
   "sideEffects": false,
   "files": [
@@ -72,5 +70,12 @@
   ],
   "allowScripts": {
     "lefthook@2.1.12": true
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=22.18.0",
+      "onFail": "error"
+    }
   }
 }

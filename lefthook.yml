@@ -1,8 +1,10 @@
+# Local safety net. CI re-runs all of this, so a bypassed hook cannot ship
+# anything: these only shorten the feedback loop.
 pre-commit:
   parallel: true
   commands:
     biome:
-      glob: "*.{ts,mts,js,mjs,json}"
+      glob: "*.{mts,mjs,js,json}"
       exclude:
         - package-lock.json
       run: npx biome check --write --no-errors-on-unmatched {staged_files}

@@ -90,4 +90,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-export default get;
+/**
+ * Namespace object, so both import styles work in ESM and CommonJS:
+ * `import { get }` / `const { get } = require(...)`, and
+ * `import bitpayRates` / `const bitpayRates = require(...)` + `bitpayRates.get()`.
+ */
+export default { get };

@@ -9,13 +9,15 @@ paid GitHub products.
 `main` is protected. **Nobody — human or AI agent — pushes directly to `main`.**
 All changes land through pull requests:
 
-1. Create a feature branch.
+1. Create a feature branch. Run `npm run verify` before you push — it is lint +
+   knip + tests + build + packaging smoke test, and it is the same command the
+   `quality` job runs, so it cannot drift from CI.
 2. Open a PR against `main` using [Conventional Commits](https://www.conventionalcommits.org/)
    (`feat:`, `fix:`, `chore:`, …) — release-please derives the version bump and
    changelog from them.
-3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (lint + knip +
-   build + `npm audit`), a `test` job across Node 22/24, and a `workflows`
-   job (zizmor, no GitHub code scanning).
+3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (`npm run verify`
+   + `npm audit`), a `test` job across Node 22/24/26, and a `workflows` job
+   (zizmor, no GitHub code scanning).
 4. A **human** reviews and merges. Merging is the human authorization step.
 
 Agents: follow `AGENTS.md`. Never push `main`, merge, publish a GitHub Release,
@@ -27,7 +29,10 @@ or run `npm publish`.
 - Require the `quality`, `test`, and `workflows` status checks to pass.
 - Everything runs on Node >= 22: tsdown's CLI requires `^22.18 || ^24.11 || >=26`
   and the tests rely on native TypeScript type stripping (22.18+). Node 20 is
-  end-of-life, so it is neither supported nor tested.
+  end-of-life, so it is neither supported nor tested. The matrix covers 22
+  (maintenance LTS), 24 (active LTS) and 26 (current); `.nvmrc`, the `quality`
+  job and the publish job all use 24. `package.json#devEngines` makes `npm ci`
+  fail outright on anything below 22.18.
 - Block force pushes and branch deletion.
 
 Do not enable paid-only rules (merge queues, org rulesets beyond Free public,
@@ -82,7 +87,8 @@ Publishing the release fires `npm-publish.yml`:
    reviewers, wait timers) are optional — they work on public GitHub Free but
    are not required; the draft-release publish is the gate.
 2. It runs `npm ci`, verifies the release tag matches `package.json`, and runs
-   `npm publish --provenance`.
+   `npm publish --provenance`. `prepublishOnly` rebuilds `dist/` and re-runs the
+   packaging smoke test, so a broken artifact cannot reach npm.
 3. Authentication uses **npm Trusted Publishing (OIDC)** — there is no
    long-lived npm token. Provenance attestation is attached automatically.
 

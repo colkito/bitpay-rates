@@ -1,12 +1,14 @@
 {
   "permissions": {
     "allow": [
+      "Bash(npm run verify)",
       "Bash(npm test)",
       "Bash(npm run test:coverage)",
       "Bash(node --test:*)",
       "Bash(npm run lint)",
       "Bash(npm run format)",
       "Bash(npm run build)",
+      "Bash(npm run smoke)",
       "Bash(npm run knip)",
       "Bash(npm run update-codes)",
       "Bash(npm ci)",

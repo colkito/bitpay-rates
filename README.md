@@ -50,19 +50,28 @@ const ethUsd = await get('USD', 'ETH');
 // GET https://bitpay.com/rates/ETH/USD
 ```
 
-The default export is the same function, so `import get from 'bitpay-rates'`
-works too. It is **not** an object: `import bitpayRates from 'bitpay-rates'`
-gives you `get` itself, not `bitpayRates.get`.
+The default export is a namespace object holding the same function, so the
+v2 style keeps working:
+
+```ts
+import bitpayRates from 'bitpay-rates';
+
+const usd = await bitpayRates.get('USD');
+```
 
 ### CommonJS
 
 ```js
 const { get } = require('bitpay-rates');
+// or: const bitpayRates = require('bitpay-rates'); bitpayRates.get('USD')
 
 get('USD')
   .then((rate) => console.log(rate))
   .catch((err) => console.error(err));
 ```
+
+All four styles — named or default, ESM or CommonJS — are asserted against the
+built artifact on every CI run and before every publish (`npm run smoke`).
 
 ### Errors
 
@@ -86,6 +95,7 @@ More examples in [`example/rates-example.mjs`](example/rates-example.mjs)
 
 ```ts
 type RateObj = { code: string; name: string; rate: number };
+type RateResponse = RateObj | RateObj[];
 
 function get(): Promise<RateObj[]>;
 function get(quote: string): Promise<RateObj>;
@@ -99,6 +109,13 @@ function get(quote: string, base: string): Promise<RateObj>;
 
 See [CODES.md](CODES.md). It is regenerated from `GET /rates/BTC` on every
 release PR (`npm run update-codes`).
+
+## Security
+
+Zero runtime dependencies, published from CI only via npm Trusted Publishing
+(OIDC) with a provenance attestation, and every release is gated on a human
+publishing the draft GitHub Release. See
+[SECURITY.md](.github/SECURITY.md) to report a vulnerability.
 
 ## Contributing
 

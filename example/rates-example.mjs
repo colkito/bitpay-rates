@@ -1,4 +1,5 @@
-import { get } from '../dist/index.mjs';
+// Run `npm run build` first — this imports the built artifact, not src/.
+import bitpayRates, { get } from '../dist/index.mjs';
 
 const code = 'ARS';
 
@@ -23,13 +24,22 @@ try {
   console.error('[ETH/USD] Error:', err);
 }
 
+// The default export is a namespace object, so the v2 style works too.
+try {
+  const rate = await bitpayRates.get('USD');
+  console.log('[default export] Rate:', rate);
+} catch (err) {
+  console.error('[default export] Error:', err);
+}
+
 try {
   const rate = await get('INVALID');
   console.log('[INVALID] Rate:', rate);
 } catch (err) {
-  console.error('[INVALID] Error:', err);
+  console.error('[INVALID] Error:', err.message);
 }
 
+// Rejected locally: a code can never steer the URL to another path.
 try {
   await get('../../api/rates');
 } catch (err) {
