@@ -12,7 +12,7 @@
     "countries",
     "price"
   ],
-  "author": "Mario Colque <dev@colkito.com>",
+  "author": "colkito <dev@colkito.com>",
   "license": "MIT",
   "type": "commonjs",
   "main": "./dist/index.cjs",
