@@ -26,7 +26,10 @@ or run `npm publish`.
 ### Rules enforced on `main` (branch protection — free on public repos)
 
 - Require a pull request before merging.
-- Require the `quality`, `test`, and `workflows` status checks to pass.
+- Require these status checks, named exactly: `quality`, `test (22)`,
+  `test (24)`, `test (26)`, `workflows`. **The matrix leg names are part of the
+  check names**, so changing the Node matrix in `ci.yml` without updating this
+  list leaves a required check that can never report and blocks every PR.
 - Everything runs on Node >= 22: tsdown's CLI requires `^22.18 || ^24.11 || >=26`
   and the tests rely on native TypeScript type stripping (22.18+). Node 20 is
   end-of-life, so it is neither supported nor tested. The matrix covers 22
@@ -97,15 +100,29 @@ The published tarball is **only `dist/`** (plus npm's always-included
 
 ## One-time setup (repository settings, not in the repo)
 
-All of this is available on GitHub Free for a public repository:
+All of this is available on GitHub Free for a public repository.
 
-- **Branch protection on `main`**: require a PR, require the `quality`,
-  `test`, and `workflows` checks, block force pushes and deletions.
-- **Environment `npm-publish`** (no paid protection rules required) so the
-  Trusted Publisher can name it.
+Already configured:
+
+- **Merges are squash-only**, so the PR title is the commit release-please
+  reads, and the branch is deleted on merge.
+- **Default `GITHUB_TOKEN` permissions are read-only** and Actions cannot
+  approve pull requests. Each workflow raises its own `permissions:` where it
+  genuinely needs to write.
+- **Private vulnerability reporting**, **secret scanning** and **push
+  protection** are on. Dependabot alerts and security updates are on.
+- **Environment `npm-publish`** with required reviewers, so the Trusted
+  Publisher can name it and the deploy has a second human gate.
+- **No repository secrets.** Publishing uses OIDC; there is no `NPM_TOKEN`.
+
+Still to keep in mind:
+
+- **Branch protection on `main`**: require a PR, require the five checks listed
+  above, block force pushes and deletions. Update the list whenever the Node
+  matrix changes.
 - **npm Trusted Publisher**: on npmjs.com → package → Settings → Trusted
-  Publisher, add this GitHub repo + the `npm-publish.yml` workflow. No
-  `NPM_TOKEN` secret is needed once this is configured.
+  Publisher, add this GitHub repo + the `npm-publish.yml` workflow. Without it
+  the publish job cannot authenticate — there is no token fallback.
 - **Release-please token** (optional but recommended), so the release PR
   triggers CI — without it the PR is bot-authored and CI is suppressed on it.
   The workflow picks the first available, in order:
