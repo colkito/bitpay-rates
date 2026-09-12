@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "A tiny Node.js wrapper for the BitPay Rates API",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "keywords": [
     "bitcoin",
@@ -39,13 +39,14 @@
   },
   "homepage": "https://github.com/colkito/bitpay-rates#readme",
   "scripts": {
-    "test": "tsx --test src/index.test.ts scripts/codes-markdown.test.ts",
-    "test:watch": "tsx --test --watch src/index.test.ts scripts/codes-markdown.test.ts",
+    "test": "node --test src/index.test.mts scripts/codes-markdown.test.mts",
+    "test:watch": "node --test --watch src/index.test.mts scripts/codes-markdown.test.mts",
+    "test:coverage": "node --test --experimental-test-coverage src/index.test.mts scripts/codes-markdown.test.mts",
     "lint": "tsc --noEmit && biome check",
     "format": "biome check --write",
     "build": "tsdown",
     "knip": "knip",
-    "update-codes": "tsx scripts/update-codes.ts",
+    "update-codes": "node scripts/update-codes.mts",
     "prepare": "lefthook install",
     "prepublishOnly": "npm run build"
   },
@@ -63,7 +64,6 @@
     "knip": "6.35.1",
     "lefthook": "2.1.12",
     "tsdown": "0.23.0",
-    "tsx": "4.22.4",
     "typescript": "5.9.3"
   },
   "sideEffects": false,
@@ -71,7 +71,6 @@
     "dist"
   ],
   "allowScripts": {
-    "lefthook@2.1.12": true,
-    "esbuild@0.28.1": true
+    "lefthook@2.1.12": true
   }
 }

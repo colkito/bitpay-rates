@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { renderCodesMarkdown } from './codes-markdown';
+import { renderCodesMarkdown } from './codes-markdown.mts';
 
 describe('renderCodesMarkdown', () => {
   it('renders a dated list with the live count', () => {

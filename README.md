@@ -13,7 +13,7 @@ official public [Rates API](https://developer.bitpay.com/reference/rates)
 
 ## Requirements
 
-- Node.js >= 20
+- Node.js >= 22
 
 ```bash
 npm install bitpay-rates
@@ -24,37 +24,42 @@ npm install bitpay-rates
 - **Promise-only.** The legacy callback signature (`get(code, cb)`) is gone —
   use `async/await` or `.then()` / `.catch()`.
 - Dual ESM + CJS with an `exports` map (`import` and `require` both work).
-- Node.js >= 20.
+- Node.js >= 22.
 - Requests time out after 10 seconds.
 - `get('ETH')` (and other crypto codes) now returns the **single** BTC/quote
   rate, not the full table for that asset as a base. Use `get('USD', 'ETH')`
   for a non-BTC pair.
+- Currency codes are validated (`/^[A-Z0-9]{2,10}$/`); anything else rejects
+  with a `TypeError` instead of being sent to the API.
 
 ## Usage
 
 ### ESM / TypeScript
 
 ```ts
-import bitpayRates, { type RateObj } from 'bitpay-rates';
+import { get, type RateObj } from 'bitpay-rates';
 
-const usd: RateObj = await bitpayRates.get('USD');
+const usd: RateObj = await get('USD');
 // GET https://bitpay.com/rates/BTC/USD
 // { code: 'USD', name: 'US Dollar', rate: 76471.42 }
 
-const all = await bitpayRates.get();
+const all = await get();
 // GET https://bitpay.com/rates/BTC  → RateObj[]
 
-const ethUsd = await bitpayRates.get('USD', 'ETH');
+const ethUsd = await get('USD', 'ETH');
 // GET https://bitpay.com/rates/ETH/USD
 ```
+
+The default export is the same function, so `import get from 'bitpay-rates'`
+works too. It is **not** an object: `import bitpayRates from 'bitpay-rates'`
+gives you `get` itself, not `bitpayRates.get`.
 
 ### CommonJS
 
 ```js
-const bitpayRates = require('bitpay-rates');
+const { get } = require('bitpay-rates');
 
-bitpayRates
-  .get('USD')
+get('USD')
   .then((rate) => console.log(rate))
   .catch((err) => console.error(err));
 ```
@@ -62,13 +67,14 @@ bitpayRates
 ### Errors
 
 `get()` rejects when BitPay returns a non-2xx status, an `{ error }` payload,
-malformed JSON, a network failure, or when the request exceeds 10 seconds.
+malformed JSON, a network failure, or when the request exceeds 10 seconds. It
+rejects with a `TypeError` — before any request — when a code is not 2-10
+alphanumeric characters.
 
 ```js
-import bitpayRates from 'bitpay-rates';
+import { get } from 'bitpay-rates';
 
-bitpayRates
-  .get('INVALID')
+get('INVALID')
   .then((rate) => console.log(rate))
   .catch((err) => console.error(err));
 ```
@@ -86,7 +92,8 @@ function get(quote: string): Promise<RateObj>;
 function get(quote: string, base: string): Promise<RateObj>;
 ```
 
-`quote` and `base` are uppercased automatically. Default `base` is `BTC`.
+`quote` and `base` are uppercased automatically and must match
+`/^[A-Z0-9]{2,10}$/`. Default `base` is `BTC`.
 
 ## Available codes
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { afterEach, describe, it, mock } from 'node:test';
 
-import { get } from './index';
+import { get } from './index.mts';
 
 type FetchHandler = (url: string, init?: RequestInit) => Response | Promise<Response>;
 
@@ -31,7 +31,7 @@ function header(init: RequestInit | undefined, name: string): string | null {
 }
 
 describe('get', { concurrency: false }, () => {
-  afterEach(() => mock.restoreAll());
+  afterEach(() => mock.reset());
 
   it('returns all BTC rates from /rates/BTC', async () => {
     const rates = [{ code: 'USD', name: 'US Dollar', rate: 1 }];
@@ -81,7 +81,17 @@ describe('get', { concurrency: false }, () => {
 
     assert.equal(header(calls[0]?.init, 'X-Accept-Version'), '2.0.0');
     assert.equal(header(calls[0]?.init, 'Accept'), 'application/json');
-    assert.equal(header(calls[0]?.init, 'Content-Type'), 'application/json');
+  });
+
+  it('rejects codes that are not plain currency codes', async () => {
+    const calls = stubFetch(() => jsonResponse({ data: [] }));
+
+    for (const bad of ['../../api/rates', 'USD?foo=bar', 'a/b', '', 'TOOLONGACODE']) {
+      await assert.rejects(get(bad), TypeError, `expected ${JSON.stringify(bad)} to be rejected`);
+    }
+    await assert.rejects(get('USD', '../x'), TypeError);
+
+    assert.equal(calls.length, 0, 'no request should leave the process');
   });
 
   it('rejects when the API returns an error field', async () => {

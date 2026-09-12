@@ -14,7 +14,7 @@ All changes land through pull requests:
    (`feat:`, `fix:`, `chore:`, …) — release-please derives the version bump and
    changelog from them.
 3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (lint + knip +
-   build + `npm audit`), a `test` job across Node 20/22/24, and a `workflows`
+   build + `npm audit`), a `test` job across Node 22/24, and a `workflows`
    job (zizmor, no GitHub code scanning).
 4. A **human** reviews and merges. Merging is the human authorization step.
 
@@ -25,7 +25,9 @@ or run `npm publish`.
 
 - Require a pull request before merging.
 - Require the `quality`, `test`, and `workflows` status checks to pass.
-- `quality` runs on Node 22 because tsdown's CLI requires Node `^22.18 || ^24.11 || >=26`. Consumers still need only Node >= 20.
+- Everything runs on Node >= 22: tsdown's CLI requires `^22.18 || ^24.11 || >=26`
+  and the tests rely on native TypeScript type stripping (22.18+). Node 20 is
+  end-of-life, so it is neither supported nor tested.
 - Block force pushes and branch deletion.
 
 Do not enable paid-only rules (merge queues, org rulesets beyond Free public,
@@ -50,11 +52,26 @@ Versioning is automated from Conventional Commits:
 
 1. On every push to `main`, **release-please** opens/updates a **release PR** that
    bumps `package.json` and updates `CHANGELOG.md`.
-2. The same workflow refreshes `CODES.md` from `GET /rates/BTC` on that PR.
+2. The same workflow refreshes `CODES.md` from `GET /rates/BTC` on that PR, on
+   every push to `main` while the PR is open (release-please force-pushes its
+   branch, so re-running is what makes the refresh survive).
 3. A maintainer reviews and merges the release PR.
 4. Merging creates a **draft GitHub Release** with auto-generated notes.
 5. A maintainer reviews the draft and clicks **Publish release**. This is the
    deploy authorization (and the only required human gate).
+
+## Dependency install scripts
+
+`package.json#allowScripts` is an explicit, version-pinned allowlist of the
+dependencies whose install scripts may run, and `.npmrc` sets
+`strict-allow-scripts=true` so anything unreviewed **fails** `npm ci` rather
+than running with a warning. When Dependabot bumps an allowlisted package the
+pin goes stale and CI fails on purpose: re-review the script, then update the
+pin in the same PR.
+
+The `update-codes` job in `release-please.yml` holds a `contents: write` token,
+so it deliberately installs nothing and restores no cache — the script runs on
+plain Node.
 
 ## Deploy to npm
 
