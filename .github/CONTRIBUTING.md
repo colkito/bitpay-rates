@@ -45,15 +45,24 @@ include them). `CODEOWNERS` is advisory unless you turn that rule on.
 
 ### AI agents
 
-Agents may **only open pull requests**. They must not:
+Agents may push feature branches and open pull requests. They must not push
+`main`, merge, publish a GitHub Release, or publish the package.
 
-- push to `main`,
-- merge pull requests,
-- publish (i.e. mark as published) GitHub Releases.
+`npm ci` installs a `pre-push` hook (`scripts/guard-protected-refs.sh`) that
+refuses a push to `main` for **any** tool working in the clone — Claude Code,
+Copilot, Cursor, a plain shell. Claude Code additionally loads a `PreToolUse`
+hook from `.claude/settings.json` covering what git never sees: merging a pull
+request, publishing a release, publishing the package. `AGENTS.md` states the
+same rules in prose for agents that support neither.
 
-The backstop is operational: run agents under a credential with **no merge/admin
-rights**. Branch protection and the draft-release gate ensure that even a
-misconfigured agent cannot ship code or publish a package on its own.
+None of that is the boundary — `--no-verify` skips a local hook. The backstop
+is operational: run agents under a credential with **no merge/admin rights**,
+and rely on branch protection plus the draft-release gate.
+
+For that to hold against an admin credential, protection must apply to admins
+too — enable "Do not allow bypassing the above settings" on the `main` rule
+(`enforce_admins`). Without it, an agent running under the owner's token can
+still reach `main` once it is past the local hook.
 
 ## Versioning & release (release-please)
 

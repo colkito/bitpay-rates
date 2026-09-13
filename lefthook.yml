@@ -1,5 +1,9 @@
 # Local safety net. CI re-runs all of this, so a bypassed hook cannot ship
 # anything: these only shorten the feedback loop.
+#
+# `pre-push` is intentionally absent: lefthook consumes git's stdin to compute
+# {push_files}, so a command under it cannot see which refs are being pushed.
+# That hook is installed directly by `npm ci` — see scripts/install-git-hooks.mjs.
 pre-commit:
   parallel: true
   commands:

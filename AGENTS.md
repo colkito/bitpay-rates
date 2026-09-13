@@ -133,29 +133,49 @@ Public page: https://www.bitpay.com/exchange-rates
 
 ## Policy
 
-`main` is protected. Agents may **only open pull requests**. Do not:
+**You may** create branches, commit, push a feature branch, and open a pull
+request. That is the whole intended workflow.
 
-- push to `main`
-- merge pull requests
-- publish GitHub Releases
-- run `npm publish`
+**You may not**, ever:
 
-These are declared in `.claude/settings.json`, but the real enforcement is
-operational and does not depend on an agent behaving: branch protection, a
-credential without merge rights, and a release that only ships when a human
-publishes the draft GitHub Release.
+- push to `main` (or `master`)
+- merge a pull request
+- publish a GitHub Release — publishing the draft is what deploys to the registry
+- publish the package yourself
+- change branch protection
 
-Three guardrails fail loudly rather than silently when something drifts, so do
-not work around them — fix the cause and say so in the PR:
+Do not look for a way around these. If you think one is wrong, say so in the
+pull request and stop.
+
+### How that is enforced
+
+Four layers, most portable first. The first two apply no matter which agent or
+tool you are:
+
+1. **Branch protection on GitHub.** `main` takes pull requests only. This is
+   the boundary; everything below is early, friendly failure.
+2. **`.git/hooks/pre-push`** (`scripts/guard-protected-refs.sh pre-push`),
+   installed by `npm ci`. Pure bash and git, so it fires for any tool pushing
+   from this clone. `--no-verify` skips it; that hatch is for the maintainer.
+3. **This file.** For an agent that reads `AGENTS.md` and supports no hooks,
+   the list above *is* the contract.
+4. **`.claude/settings.json`** — permission rules plus a `PreToolUse` hook, for
+   Claude Code only. It catches, before the command runs, what git cannot see:
+   merging a pull request, publishing a release, publishing the package.
+
+`pre-push` is installed by `scripts/install-git-hooks.mjs` rather than by
+lefthook, because lefthook consumes git's stdin to build `{push_files}`, so a
+command under it never learns which refs are being pushed.
+
+### Guardrails that fail loudly
+
+Do not work around these — fix the cause and say so in the pull request:
 
 - `npm ci` fails with `EBADDEVENGINES` on Node < 22.18 (`devEngines`).
 - `npm ci` fails when a dependency gains an install script that is not reviewed
-  in `allowScripts` (`.npmrc` → `strict-allow-scripts`).
+  in `allowScripts` (`.npmrc` sets `strict-allow-scripts`).
 - `npm run smoke` fails when the built artifact stops matching the documented
   import styles.
-
-Agents may stage and commit locally, but **pushing is a human step** — ask for
-it rather than working around the deny rule.
 
 Use [Conventional Commits](https://www.conventionalcommits.org/)
 (`feat:`, `fix:`, `chore:`, `ci:`, `docs:`, …). Breaking changes need a

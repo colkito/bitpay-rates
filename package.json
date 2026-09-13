@@ -48,7 +48,7 @@
     "build": "tsdown",
     "smoke": "node scripts/smoke.mts",
     "update-codes": "node scripts/update-codes.mts",
-    "prepare": "lefthook install || true",
+    "prepare": "lefthook install || true && node scripts/install-git-hooks.mjs",
     "prepublishOnly": "npm run build && npm run smoke"
   },
   "knip": {
