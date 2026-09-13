@@ -1,60 +1,50 @@
 # Agent guide
 
-bitpay-rates is a lightweight, **zero-runtime-dependency** Node.js wrapper for
-the BitPay exchange rates API. It exposes one promise-based function.
-
-This file is the source of truth for coding agents. `CLAUDE.md` and
-`.github/copilot-instructions.md` point here.
+bitpay-rates is a **zero-runtime-dependency** Node.js wrapper for the BitPay
+exchange rates API. One promise-based function. This file is the source of
+truth for coding agents. `CLAUDE.md` and `.github/copilot-instructions.md`
+point here.
 
 ## Requirements
 
-Node **>= 22.18** for development — the build (tsdown) and the tests (native
-TypeScript type stripping) both need it. `package.json#devEngines` enforces it,
-so `npm ci` fails with `EBADDEVENGINES` on anything older instead of failing
-later in a confusing way. `.nvmrc` pins **24** (active LTS), which is also what
-the CI quality job and the publish job use.
-
-Consumers of the published package need Node >= 22 (`package.json#engines`).
-The test matrix covers 22 (maintenance LTS), 24 (active LTS) and 26 (current).
-
-Keep `@types/node` on the **22.x** line: it must describe the oldest Node this
-package supports, not the newest one we develop on.
+- **Develop** on Node **>= 22.18** (`package.json#devEngines` — `npm ci` fails
+  with `EBADDEVENGINES` below that). `.nvmrc`, the `quality` job and the
+  publish job pin **24**.
+- **Consumers** need Node >= 22 (`package.json#engines`). Tests run on 22, 24
+  and 26.
+- Keep `@types/node` on the **22.x** line (oldest supported Node, not the one
+  we develop on).
 
 ## Commands
 
-**Before opening a PR, run `npm run verify`.** It is lint + knip + tests +
-build + packaging smoke test, and it is literally the command CI runs. The
-`quality` job adds three checks that need network and therefore do not belong
-in the inner loop: `npm audit`, `npm audit signatures` and
+**Before opening a PR, run `npm run verify`.** That is lint + knip + tests +
+build + packaging smoke test — the same command the `quality` job runs. CI
+then adds three network checks: `npm audit`, `npm audit signatures` and
 `@arethetypeswrong/cli`.
 
-- **Test**: `npm test`
-- **Test watch**: `npm run test:watch`
-- **Coverage**: `npm run test:coverage`
-- **Single test**: `node --test --test-name-pattern "<name>" src/index.test.mts`
-- **Lint** (types + Biome): `npm run lint`
-- **Format**: `npm run format`
-- **Dead-code check**: `npm run knip`
-- **Build**: `npm run build`
-- **Packaging check**: `npm run smoke` (needs a build first)
-- **Refresh CODES.md**: `npm run update-codes` (hits the live BitPay API).
-  Release-please owns this file: it runs on the release PR. Do not run it on a
-  feature PR and do not hand-edit CODES.md.
-- **Type check only**: `tsc --noEmit`
+| Script | What |
+| --- | --- |
+| `npm test` | unit tests (`node --test`, no transpiler) |
+| `npm run test:watch` | same, watch mode |
+| `npm run test:coverage` | coverage |
+| `npm run lint` | `tsc --noEmit` + Biome |
+| `npm run format` | Biome write |
+| `npm run knip` | dead code |
+| `npm run build` | tsdown → `dist/` |
+| `npm run smoke` | load `dist/` and assert import styles (needs a build) |
+| `npm run update-codes` | live BitPay API → `CODES.md`. **Release PR only.** Do not run on a feature PR and do not hand-edit `CODES.md`. |
 
-Do not edit `dist/` or `package-lock.json` by hand; run `npm ci`.
+Single test: `node --test --test-name-pattern "<name>" src/index.test.mts`
 
-**Adding a dependency needs human approval.** `npm install` is deliberately not
-pre-approved: propose the package and the reason in the PR first, then install
-it with `npm install --save-exact --save-dev <pkg>@<version>`.
+Do not edit `dist/` or `package-lock.json` by hand; run `npm ci`. Adding a
+dependency needs human approval first, then
+`npm install --save-exact --save-dev <pkg>@<version>`.
 
-`prepare` installs the git hooks and is a silent no-op outside a git checkout,
-so `npm ci` still works where there is no `.git` (a Docker `COPY`, a tarball).
+`prepare` installs the git hooks and is a no-op outside a git checkout.
 
 ## Architecture
 
-Single module: `src/index.mts`. Sources are `.mts` so Node can run them
-directly — there is no TypeScript runner in the dependency tree.
+Single module: `src/index.mts`. Sources are `.mts` so Node runs them directly.
 
 ```ts
 get(): Promise<RateObj[]>
@@ -62,135 +52,79 @@ get(query: { base?: string; quote?: undefined }): Promise<RateObj[]>
 get(query: { base?: string; quote: string }): Promise<RateObj>
 ```
 
-One named argument object, deliberately — there is no parameter order to get
-wrong. The third overload's `quote?: undefined` is **load-bearing**: without it
-TypeScript resolves `get(someVariable)` to the array overload and the declared
-return type lies.
+Named `{ base, quote }` — no argument order. The third overload's
+`quote?: undefined` is load-bearing: without it, `get(someVariable)` resolves
+to the array overload and the declared return type lies.
 
-`get` is the named export; the default export is a namespace object `{ get }`,
-so `import bitpayRates` / `require(...)` + `bitpayRates.get()` keeps working.
-**Do not change either export shape** — `scripts/smoke.mts` asserts all four
-import styles against `dist/` in CI and before every publish.
+Named export is `get`. Default export is a namespace `{ get }`, so
+`import bitpayRates` / `require(...)` + `bitpayRates.get()` still works.
+**Do not change either shape** — `scripts/smoke.mts` asserts all four import
+styles against `dist/` in CI and in `prepublishOnly`.
 
-- `get()` → `GET /rates/BTC` → every rate vs BTC
-- `get({ base: 'ETH' })` → `GET /rates/ETH` → every rate vs ETH
-- `get({ quote: 'USD' })` → `GET /rates/BTC/USD` → one rate
-- `get({ base: 'ETH', quote: 'USD' })` → `GET /rates/ETH/USD` → one rate
+- `get()` → `GET /rates/BTC`
+- `get({ base: 'ETH' })` → `GET /rates/ETH`
+- `get({ quote: 'USD' })` → `GET /rates/BTC/USD`
+- `get({ base: 'ETH', quote: 'USD' })` → `GET /rates/ETH/USD`
 
-Always send `X-Accept-Version: 2.0.0`, `Accept: application/json` and
+Headers: `X-Accept-Version: 2.0.0`, `Accept: application/json`,
 `User-Agent: bitpay-rates`. Unwrap `{ data }`. Reject on `{ error }`, non-2xx,
-malformed JSON, or a 10s timeout (`AbortController` + `setTimeout`).
+malformed JSON, a 10s timeout, or a response shape that does not match what
+was asked for (`/rates/{code}` is polymorphic: BTC is a list, USD is one
+rate).
 
-`base` and `quote` are uppercased and must match `/^[A-Z0-9]{2,10}$/`; anything
-else rejects with a `TypeError` before a request is made, so caller input can
-never steer the URL to another path on bitpay.com. The 18 codes containing `_`
-(`USDC_arb`, `MATIC_e`, …) are listed by `/rates/BTC` but BitPay rejects them
-as a base or quote, so the pattern costs nothing.
+`base` / `quote` are uppercased and must match `/^[A-Z0-9]{2,10}$/` before any
+request. Codes with `_` (`USDC_arb`, …) appear in `CODES.md` but BitPay
+rejects them as base or quote.
 
-`GET /rates/{code}` is polymorphic — `/rates/BTC` is a list, `/rates/USD` is a
-single BTC/USD rate. The response shape is therefore checked against what was
-asked for, so the declared return type cannot lie.
-
-`Promise.race` subscribes to both promises, so the aborted fetch's later
-rejection is handled and discarded. Verified: it produces no unhandled
-rejection. Do not "fix" it.
-
-Uses native `fetch`. No runtime dependencies.
-
-### Types
+Native `fetch`. No runtime dependencies.
 
 - `RateObj` — `{ code: string; name: string; rate: number }`
 - `RateResponse` — `RateObj | RateObj[]`
 
-Official docs: https://developer.bitpay.com/reference/rates
-Public page: https://www.bitpay.com/exchange-rates
+Docs: https://developer.bitpay.com/reference/rates
 
 ## Tooling
 
-- **Lint + format**: Biome (`biome.json`)
-- **Tests**: Node's built-in `node:test`, run by `node --test` with no
-  transpiler. Mock `globalThis.fetch`. Reset with `mock.reset()` — `restoreAll()`
-  leaves fake timers enabled and hangs the next test. Never hit the live API.
-- **Build**: tsdown → minified `dist/index.mjs` (ESM) + `dist/index.cjs` (CJS)
-  plus matching `.d.mts` / `.d.cts`. Wired through `exports` in `package.json`.
-  The npm tarball is **only `dist/`** (plus README/LICENSE/package.json). Do not
-  add files to `package.json#files`.
-- **Git hooks**: `scripts/git-hooks/`, installed by `npm ci`
-  (`scripts/install-git-hooks.mjs`). `pre-commit` runs Biome on staged files,
-  `commit-msg` enforces Conventional Commits, `pre-push` refuses `main`.
-- **Dead code**: knip
-- **Types across resolvers**: CI runs `@arethetypeswrong/cli` against the packed
-  tarball. It is not a devDependency (it would add 56 packages) and is not part
-  of `verify`, so run it by hand if you touch `exports`, `main` or `types`:
+- **Lint / format**: Biome. **Tests**: `node:test`. Mock `globalThis.fetch`.
+  Reset with `mock.reset()` — `restoreAll()` leaves fake timers on and hangs
+  the next test. Never hit the live API.
+- **Build**: tsdown → minified `dist/index.mjs` + `dist/index.cjs` and matching
+  `.d.mts` / `.d.cts`. The npm tarball is **only `dist/`** (plus README /
+  LICENSE / package.json). Do not add files to `package.json#files`.
+- **Git hooks** (`scripts/git-hooks/`, installed by `npm ci`): Biome on staged
+  files, Conventional Commits, refuse push to `main`.
+- **knip** for dead code. **attw** in CI only (not a devDependency, not in
+  `verify`). If you touch `exports` / `main` / `types`, run
   `npx --yes @arethetypeswrong/cli@0.18.5 --pack .`
-- **Packaging**: `scripts/smoke.mts` loads `dist/` through both entry points and
-  asserts every documented import style. Type checks and unit tests only see
-  `src/`, so this is the only thing that catches a broken `exports` map or
-  default-export shape. It runs in CI after the build and from
-  `prepublishOnly`.
-- **Install scripts**: none in the tree. `.npmrc` sets
-  `strict-allow-scripts=true`, so the first dependency that gains one fails
-  `npm ci` instead of running. A pin in `package.json#allowScripts` is a
-  deliberate, reviewed act — keep that list empty.
+- **Install scripts**: none. `.npmrc` has `strict-allow-scripts=true`, so a new
+  one fails `npm ci`. Keep `package.json#allowScripts` empty.
 
 ## Policy
 
-**You may** create branches, commit, push a feature branch, and open a pull
-request. That is the whole intended workflow.
+**You may** create a branch, commit, push that branch, and open a pull request.
 
-**You may not**, ever:
+**You may not** push `main`/`master`, merge a PR, publish a GitHub Release,
+publish the package, or change branch protection. If you think a rule is
+wrong, say so in the PR and stop.
 
-- push to `main` (or `master`)
-- merge a pull request
-- publish a GitHub Release — publishing the draft is what deploys to the registry
-- publish the package yourself
-- change branch protection
+What actually stops you is server-side: branch protection on `main` with
+`enforce_admins`, a credential without merge rights, npm Trusted Publishing
+bound to one workflow, and a human publishing the draft release.
 
-Do not look for a way around these. If you think one is wrong, say so in the
-pull request and stop.
+The local `pre-push` hook refuses `main` for any tool in this clone. It is
+skipped by `--no-verify`. `.claude/settings.json` is prefix matches, not a
+control (`npx`, `eval`, an absolute path walk around them). Do not add a
+command parser.
 
-### What actually stops you, and what does not
+Loud failures — fix the cause, do not work around them:
 
-**The boundary is server-side**, because that is the only part an agent cannot
-talk its way around:
+- `npm ci` → `EBADDEVENGINES` on Node < 22.18
+- `npm ci` fails when a dependency gains an install script
+- `npm run smoke` fails when `dist/` no longer matches the documented imports
 
-- branch protection on `main` (pull requests only, and `enforce_admins` so it
-  binds an admin token too),
-- a credential without merge rights,
-- npm Trusted Publishing bound to one workflow in one environment, so there is
-  no token to steal and no way to publish from a laptop,
-- a release that ships only when a human publishes the draft.
+Conventional Commits (`feat:`, `fix:`, `chore:`, …). Breaking changes need
+`BREAKING CHANGE:` or `feat!:` / `fix!:`. See `.github/CONTRIBUTING.md`.
 
-**`.git/hooks/pre-push`** (`scripts/guard-protected-refs.sh`, installed by
-`npm ci`) refuses a push to `main`. It is bash and git only, so it fires for any
-tool pushing from this clone, and it reads the real refspec however the command
-was written — `eval`, `sh -c`, `npx git` all go through it. Tested in CI:
-`scripts/guard-protected-refs.test.mts`.
-
-**This file** is the contract for agents that support no hooks at all.
-
-**`.claude/settings.json`** holds permission rules. They are prefix matches and
-nothing more: `Bash(npm publish:*)` does not match `/usr/bin/npm publish`, and
-`npx`, `eval` and `$(...)` walk around all of them. They state intent and
-prevent a slip; **do not mistake them for a control.** Do not add a command
-parser — it cannot see past those prefix matches either.
-
-### Guardrails that fail loudly
-
-Do not work around these — fix the cause and say so in the pull request:
-
-- `npm ci` fails with `EBADDEVENGINES` on Node < 22.18 (`devEngines`).
-- `npm ci` fails when a dependency gains an install script (`.npmrc` sets
-  `strict-allow-scripts`; the allowlist is empty on purpose).
-- `npm run smoke` fails when the built artifact stops matching the documented
-  import styles.
-
-Use [Conventional Commits](https://www.conventionalcommits.org/)
-(`feat:`, `fix:`, `chore:`, `ci:`, `docs:`, …). Breaking changes need a
-`BREAKING CHANGE:` footer (or `feat!:` / `fix!:`) so release-please can cut
-the major. See `.github/CONTRIBUTING.md`.
-
-Only `dist/` is published. Keep runtime dependencies at zero. Keep the
-published JS minified. Keep the devDependency count low — prefer a Node
-built-in over a package. Do not add GitHub Team/Enterprise/Advanced Security
-features — this is a public GitHub Free repo.
+Keep runtime dependencies at zero, published JS minified, and the
+devDependency count low. This is a public GitHub Free repo — no Team /
+Enterprise / Advanced Security features.

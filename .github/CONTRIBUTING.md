@@ -21,9 +21,6 @@ All changes land through pull requests:
    `workflows` job (zizmor, no GitHub code scanning).
 4. A **human** reviews and merges. Merging is the human authorization step.
 
-Agents: follow `AGENTS.md`. Never push `main`, merge, publish a GitHub Release,
-or run `npm publish`.
-
 ### Rules enforced on `main` (branch protection — free on public repos)
 
 - Require a pull request before merging.
@@ -45,25 +42,14 @@ include them). `CODEOWNERS` is advisory unless you turn that rule on.
 
 ### AI agents
 
-Agents may push feature branches and open pull requests. They must not push
-`main`, merge, publish a GitHub Release, or publish the package.
+Follow `AGENTS.md`. Agents may push a feature branch and open a PR. They must
+not push `main`, merge, publish a GitHub Release, or publish the package.
 
-`npm ci` installs a `pre-push` hook (`scripts/guard-protected-refs.sh`) that
-refuses a push to `main` for **any** tool working in the clone — Claude Code,
-Copilot, Cursor, a plain shell — and it is covered by tests in CI.
-`.claude/settings.json` adds permission rules for Claude Code, and `AGENTS.md`
-states the rules in prose for agents that support neither.
-
-None of that is the boundary. A local hook is skipped by `--no-verify`, and
-permission rules are prefix matches that `npx`, `eval` or an absolute path walk
-straight around. The backstop is operational: run agents under a credential
-with **no merge/admin rights**, and rely on branch protection, Trusted
-Publishing and the draft-release gate.
-
-For that to hold against an admin credential, protection must apply to admins
-too — enable "Do not allow bypassing the above settings" on the `main` rule
-(`enforce_admins`). Without it, an agent running under the owner's token can
-still reach `main` once it is past the local hook.
+`npm ci` installs a `pre-push` hook that refuses `main`. That hook is UX, not
+the boundary: `--no-verify` skips it. Run agents under a credential with **no
+merge/admin rights**, and enable "Do not allow bypassing the above settings"
+(`enforce_admins`) on `main`. Without that, an agent on the owner's token still
+reaches `main`.
 
 ## Versioning & release (release-please)
 
