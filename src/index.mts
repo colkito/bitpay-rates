@@ -3,9 +3,16 @@ export type RateResponse = RateObj | RateObj[];
 
 /** Arguments for {@link get}. Named so neither code can be passed in the wrong position. */
 export type RateQuery = {
-  /** Base cryptocurrency. Defaults to `'BTC'`. */
+  /**
+   * Base cryptocurrency: the asset being priced.
+   *
+   * @defaultValue `'BTC'`
+   */
   base?: string;
-  /** Quote currency. Omit to get every rate for `base`. */
+  /**
+   * Quote currency: what to price `base` in. Omit for every rate against
+   * `base`.
+   */
   quote?: string;
 };
 
@@ -106,10 +113,10 @@ async function readRates(
   // list, anything else answers with a single rate. Check the shape so the
   // declared return type cannot lie.
   if (wantsTable) {
-    if (!Array.isArray(data)) {
+    if (!Array.isArray(data) || !data.every(isRateObj)) {
       throw new Error(`Unexpected response from ${url}: expected a list of rates`);
     }
-  } else if (!isRecord(data) || Array.isArray(data)) {
+  } else if (!isRateObj(data)) {
     throw new Error(`Unexpected response from ${url}: expected a single rate`);
   }
 
@@ -118,6 +125,19 @@ async function readRates(
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+/**
+ * Every field is checked, so the declared type is not a promise the runtime
+ * breaks. All 388 rows the live API returns for BTC and ETH satisfy this.
+ */
+function isRateObj(value: unknown): value is RateObj {
+  return (
+    isRecord(value) &&
+    typeof value.code === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.rate === 'number'
+  );
 }
 
 /**

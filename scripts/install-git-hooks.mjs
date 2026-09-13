@@ -1,15 +1,13 @@
-// Installs the hooks lefthook does not manage. Run from `prepare`, after
-// `lefthook install`, so nothing overwrites anything: lefthook only writes the
-// hooks named in lefthook.yml, and pre-push is deliberately not one of them.
+// Installs this repo's git hooks. Run from `prepare`, so `npm ci` sets them up.
 //
-// Node rather than `cp` so it works on Windows too. Silent no-op outside a git
-// checkout — installing from a tarball has no .git to write to.
+// Hand-written rather than managed by a hook runner: there are three small
+// hooks, and the only runner in the tree was also the only dependency that ran
+// code at install time. Node rather than `cp` so it works on Windows. Silent
+// no-op outside a git checkout — installing from a tarball has no .git.
 
 import { execFileSync } from 'node:child_process';
-import { chmodSync, copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-
-const HOOKS = ['pre-push'];
 
 let gitDir;
 try {
@@ -21,14 +19,18 @@ try {
   process.exit(0);
 }
 
+const source = join(import.meta.dirname, 'git-hooks');
+if (!existsSync(source)) process.exit(0);
+
 const target = join(gitDir, 'hooks');
 mkdirSync(target, { recursive: true });
 
-for (const hook of HOOKS) {
-  const src = join(import.meta.dirname, 'git-hooks', hook);
-  if (!existsSync(src)) continue;
+const installed = [];
+for (const hook of readdirSync(source)) {
   const dest = join(target, hook);
-  copyFileSync(src, dest);
+  copyFileSync(join(source, hook), dest);
   chmodSync(dest, 0o755);
-  console.log(`installed git hook: ${hook}`);
+  installed.push(hook);
 }
+
+console.log(`installed git hooks: ${installed.join(', ')}`);

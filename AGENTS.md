@@ -47,9 +47,8 @@ Do not edit `dist/` or `package-lock.json` by hand; run `npm ci`.
 pre-approved: propose the package and the reason in the PR first, then install
 it with `npm install --save-exact --save-dev <pkg>@<version>`.
 
-`prepare` ends in `|| true` on purpose: lefthook exits 1 without a `.git`
-directory, which would otherwise break `npm ci` in a checkout with no git
-history.
+`prepare` installs the git hooks and is a silent no-op outside a git checkout,
+so `npm ci` still works where there is no `.git` (a Docker `COPY`, a tarball).
 
 ## Architecture
 
@@ -115,8 +114,11 @@ Public page: https://www.bitpay.com/exchange-rates
   plus matching `.d.mts` / `.d.cts`. Wired through `exports` in `package.json`.
   The npm tarball is **only `dist/`** (plus README/LICENSE/package.json). Do not
   add files to `package.json#files`.
-- **Hooks**: lefthook (`lefthook.yml`) — Biome on staged files, Conventional
-  Commits on `commit-msg`.
+- **Git hooks**: `scripts/git-hooks/`, installed by `npm ci`
+  (`scripts/install-git-hooks.mjs`). `pre-commit` runs Biome on staged files,
+  `commit-msg` enforces Conventional Commits, `pre-push` refuses `main`. Written
+  by hand rather than with a runner: three small hooks, and the only runner in
+  the tree was also the only dependency that ran code at install time.
 - **Dead code**: knip
 - **Types across resolvers**: CI runs `@arethetypeswrong/cli` against the packed
   tarball. It is not a devDependency (it would add 56 packages) and is not part
@@ -147,25 +149,33 @@ request. That is the whole intended workflow.
 Do not look for a way around these. If you think one is wrong, say so in the
 pull request and stop.
 
-### How that is enforced
+### What actually stops you, and what does not
 
-Four layers, most portable first. The first two apply no matter which agent or
-tool you are:
+**The boundary is server-side**, because that is the only part an agent cannot
+talk its way around:
 
-1. **Branch protection on GitHub.** `main` takes pull requests only. This is
-   the boundary; everything below is early, friendly failure.
-2. **`.git/hooks/pre-push`** (`scripts/guard-protected-refs.sh pre-push`),
-   installed by `npm ci`. Pure bash and git, so it fires for any tool pushing
-   from this clone. `--no-verify` skips it; that hatch is for the maintainer.
-3. **This file.** For an agent that reads `AGENTS.md` and supports no hooks,
-   the list above *is* the contract.
-4. **`.claude/settings.json`** — permission rules plus a `PreToolUse` hook, for
-   Claude Code only. It catches, before the command runs, what git cannot see:
-   merging a pull request, publishing a release, publishing the package.
+- branch protection on `main` (pull requests only, and `enforce_admins` so it
+  binds an admin token too),
+- a credential without merge rights,
+- npm Trusted Publishing bound to one workflow in one environment, so there is
+  no token to steal and no way to publish from a laptop,
+- a release that ships only when a human publishes the draft.
 
-`pre-push` is installed by `scripts/install-git-hooks.mjs` rather than by
-lefthook, because lefthook consumes git's stdin to build `{push_files}`, so a
-command under it never learns which refs are being pushed.
+**`.git/hooks/pre-push`** (`scripts/guard-protected-refs.sh`, installed by
+`npm ci`) refuses a push to `main`. It is bash and git only, so it fires for any
+tool pushing from this clone, and it reads the real refspec however the command
+was written — `eval`, `sh -c`, `npx git` all go through it. Tested in CI:
+`scripts/guard-protected-refs.test.mts`.
+
+**This file** is the contract for agents that support no hooks at all.
+
+**`.claude/settings.json`** holds permission rules. They are prefix matches and
+nothing more: `Bash(npm publish:*)` does not match `/usr/bin/npm publish`, and
+`npx`, `eval` and `$(...)` walk around all of them. They state intent and
+prevent a slip; **do not mistake them for a control.** An earlier version of
+this repo shipped a 191-line bash command parser here. It was deleted: it was
+longer than the library, bypassable nine ways, and defended nothing the list
+above does not.
 
 ### Guardrails that fail loudly
 

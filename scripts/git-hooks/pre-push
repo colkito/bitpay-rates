@@ -1,5 +1,2 @@
 #!/usr/bin/env sh
-# Installed by `npm ci` (see scripts/install-git-hooks.mjs). Not managed by
-# lefthook: lefthook consumes git's stdin to build {push_files}, so a command
-# under it never sees which refs are being pushed.
-exec bash "$(git rev-parse --show-toplevel)/scripts/guard-protected-refs.sh" pre-push
+exec bash "$(git rev-parse --show-toplevel)/scripts/guard-protected-refs.sh"

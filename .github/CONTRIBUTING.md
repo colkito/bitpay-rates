@@ -16,7 +16,7 @@ All changes land through pull requests:
    (`feat:`, `fix:`, `chore:`, …) — release-please derives the version bump and
    changelog from them.
 3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (`npm run verify`,
-   plus the two network-dependent checks `npm audit` and
+   plus the network-dependent checks `npm audit`, `npm audit signatures` and
    `@arethetypeswrong/cli`), a `test` job across Node 22/24/26, and a
    `workflows` job (zizmor, no GitHub code scanning).
 4. A **human** reviews and merges. Merging is the human authorization step.
@@ -50,14 +50,15 @@ Agents may push feature branches and open pull requests. They must not push
 
 `npm ci` installs a `pre-push` hook (`scripts/guard-protected-refs.sh`) that
 refuses a push to `main` for **any** tool working in the clone — Claude Code,
-Copilot, Cursor, a plain shell. Claude Code additionally loads a `PreToolUse`
-hook from `.claude/settings.json` covering what git never sees: merging a pull
-request, publishing a release, publishing the package. `AGENTS.md` states the
-same rules in prose for agents that support neither.
+Copilot, Cursor, a plain shell — and it is covered by tests in CI.
+`.claude/settings.json` adds permission rules for Claude Code, and `AGENTS.md`
+states the rules in prose for agents that support neither.
 
-None of that is the boundary — `--no-verify` skips a local hook. The backstop
-is operational: run agents under a credential with **no merge/admin rights**,
-and rely on branch protection plus the draft-release gate.
+None of that is the boundary. A local hook is skipped by `--no-verify`, and
+permission rules are prefix matches that `npx`, `eval` or an absolute path walk
+straight around. The backstop is operational: run agents under a credential
+with **no merge/admin rights**, and rely on branch protection, Trusted
+Publishing and the draft-release gate.
 
 For that to hold against an admin credential, protection must apply to admins
 too — enable "Do not allow bypassing the above settings" on the `main` rule
@@ -80,12 +81,15 @@ Versioning is automated from Conventional Commits:
 
 ## Dependency install scripts
 
-`package.json#allowScripts` is an explicit, version-pinned allowlist of the
-dependencies whose install scripts may run, and `.npmrc` sets
-`strict-allow-scripts=true` so anything unreviewed **fails** `npm ci` rather
-than running with a warning. When Dependabot bumps an allowlisted package the
-pin goes stale and CI fails on purpose: re-review the script, then update the
-pin in the same PR.
+**No package in the tree runs code at install time.** `.npmrc` sets
+`strict-allow-scripts=true`, so the first dependency that gains an install
+script **fails** `npm ci` instead of running: review it, then add a pinned
+entry to `package.json#allowScripts`. Keeping that list empty is the goal, and
+it is why there is no hook runner — the only one in the tree was also the only
+install script.
+
+CI additionally runs `npm audit signatures`, which checks every installed
+package against the registry's signature.
 
 The `update-codes` job in `release-please.yml` holds a `contents: write` token,
 so it deliberately installs nothing and restores no cache — the script runs on

@@ -1,7 +1,17 @@
 export type CodeRate = { code: string; name: string };
 
-/** Third-party text lands in a repo file, so collapse anything that could break the list. */
-const clean = (value: string) => value.replace(/[\r\n]+/g, ' ').trim();
+/**
+ * BitPay's text lands in a repo file written by a job that holds
+ * `contents: write`, so neutralise what could restructure the list: newlines
+ * that would forge an entry, and the characters that open a link, a code span
+ * or raw HTML. Parentheses and `*` are left alone — they cannot do anything on
+ * their own once `[` is escaped, and real names use them ("Gold (troy ounce)").
+ */
+const clean = (value: string) =>
+  value
+    .replace(/[\r\n]+/g, ' ')
+    .replace(/[\\`[\]<>]/g, '\\$&')
+    .trim();
 
 export function renderCodesMarkdown(rates: CodeRate[], date: string): string {
   return [

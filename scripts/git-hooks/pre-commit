@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+# Format and lint what is being committed. CI re-runs `npm run verify`, so a
+# skipped hook (--no-verify) cannot ship anything; this only shortens the loop.
+set -e
+
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.mts' '*.mjs' '*.js' '*.json' ':!package-lock.json')
+[ -z "$files" ] && exit 0
+
+# shellcheck disable=SC2086
+npx biome check --write --no-errors-on-unmatched $files
+# shellcheck disable=SC2086
+git add $files

@@ -123,6 +123,32 @@ describe('get', { concurrency: false }, () => {
     await assert.rejects(get({ base: 'USD' }), /expected a list of rates/);
   });
 
+  it('rejects a rate that is missing a field or has the wrong type', async () => {
+    const broken = [
+      { code: 'USD', name: 'US Dollar' },
+      { code: 'USD', name: 'US Dollar', rate: '42' },
+      { code: 'USD', rate: 42 },
+      { name: 'US Dollar', rate: 42 },
+      { code: 42, name: 'US Dollar', rate: 42 },
+    ];
+
+    for (const data of broken) {
+      stubFetch(() => jsonResponse({ data }));
+      await assert.rejects(
+        get({ quote: 'USD' }),
+        /expected a single rate/,
+        `expected ${JSON.stringify(data)} to be rejected`,
+      );
+      mock.reset();
+    }
+  });
+
+  it('rejects a table containing one broken row', async () => {
+    stubFetch(() => jsonResponse({ data: [RATE, { code: 'EUR', name: 'Euro' }] }));
+
+    await assert.rejects(get(), /expected a list of rates/);
+  });
+
   it('rejects when data is present but not an object', async () => {
     for (const data of [0, '', false, 'text', 42]) {
       stubFetch(() => jsonResponse({ data }));

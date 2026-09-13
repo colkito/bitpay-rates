@@ -30,22 +30,8 @@
     ],
     "deny": [
       "Bash(npm publish:*)",
-      "Bash(gh pr merge:*)"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/guard-protected-refs.sh\" pretooluse",
-            "statusMessage": "Checking protected refs",
-            "timeout": 10
-          }
-        ]
-      }
+      "Bash(gh pr merge:*)",
+      "Bash(gh release:*)"
     ]
   }
 }

@@ -31,6 +31,8 @@ jobs:
       # never drift from it.
       - run: npm run verify
       - run: npm audit --audit-level=high
+      # Every installed package still matches what the registry signed.
+      - run: npm audit signatures
       # Types across every resolution mode. Kept out of `verify` and out of
       # devDependencies: it pulls 56 packages and needs network.
       - run: npx --yes @arethetypeswrong/cli@0.18.5 --pack .
