@@ -129,8 +129,8 @@ Still to keep in mind:
   The workflow picks the first available, in order:
   1. **GitHub App (free):** create an App with `Contents: RW` and
      `Pull requests: RW`, install it on this repo, then set the repo
-     **variable** `RELEASE_PLEASE_APP_ID` and the **secret**
-     `RELEASE_PLEASE_APP_PRIVATE_KEY`.
+     **variable** `RELEASE_PLEASE_APP_CLIENT_ID` (the App's Client ID, not
+     the numeric App ID) and the **secret** `RELEASE_PLEASE_APP_PRIVATE_KEY`.
   2. **PAT fallback:** a fine-grained PAT with `contents: write` +
      `pull_requests: write`, stored as the secret `RELEASE_PLEASE_TOKEN`.
   3. **Nothing configured:** falls back to `GITHUB_TOKEN` (CI won't run on the
