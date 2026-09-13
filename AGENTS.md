@@ -24,8 +24,9 @@ package supports, not the newest one we develop on.
 
 **Before opening a PR, run `npm run verify`.** It is lint + knip + tests +
 build + packaging smoke test, and it is literally the command CI runs. The
-`quality` job adds two checks that need network and therefore do not belong in
-the inner loop: `npm audit` and `@arethetypeswrong/cli`.
+`quality` job adds three checks that need network and therefore do not belong
+in the inner loop: `npm audit`, `npm audit signatures` and
+`@arethetypeswrong/cli`.
 
 - **Test**: `npm test`
 - **Test watch**: `npm run test:watch`
@@ -116,9 +117,7 @@ Public page: https://www.bitpay.com/exchange-rates
   add files to `package.json#files`.
 - **Git hooks**: `scripts/git-hooks/`, installed by `npm ci`
   (`scripts/install-git-hooks.mjs`). `pre-commit` runs Biome on staged files,
-  `commit-msg` enforces Conventional Commits, `pre-push` refuses `main`. Written
-  by hand rather than with a runner: three small hooks, and the only runner in
-  the tree was also the only dependency that ran code at install time.
+  `commit-msg` enforces Conventional Commits, `pre-push` refuses `main`.
 - **Dead code**: knip
 - **Types across resolvers**: CI runs `@arethetypeswrong/cli` against the packed
   tarball. It is not a devDependency (it would add 56 packages) and is not part
@@ -129,9 +128,10 @@ Public page: https://www.bitpay.com/exchange-rates
   `src/`, so this is the only thing that catches a broken `exports` map or
   default-export shape. It runs in CI after the build and from
   `prepublishOnly`.
-- **Install scripts**: `package.json#allowScripts` is the reviewed allowlist and
-  `.npmrc` sets `strict-allow-scripts=true`, so an unreviewed install script
-  fails `npm ci` instead of running. Adding one is a deliberate, reviewed act.
+- **Install scripts**: none in the tree. `.npmrc` sets
+  `strict-allow-scripts=true`, so the first dependency that gains one fails
+  `npm ci` instead of running. A pin in `package.json#allowScripts` is a
+  deliberate, reviewed act — keep that list empty.
 
 ## Policy
 
@@ -172,18 +172,16 @@ was written — `eval`, `sh -c`, `npx git` all go through it. Tested in CI:
 **`.claude/settings.json`** holds permission rules. They are prefix matches and
 nothing more: `Bash(npm publish:*)` does not match `/usr/bin/npm publish`, and
 `npx`, `eval` and `$(...)` walk around all of them. They state intent and
-prevent a slip; **do not mistake them for a control.** An earlier version of
-this repo shipped a 191-line bash command parser here. It was deleted: it was
-longer than the library, bypassable nine ways, and defended nothing the list
-above does not.
+prevent a slip; **do not mistake them for a control.** Do not add a command
+parser — it cannot see past those prefix matches either.
 
 ### Guardrails that fail loudly
 
 Do not work around these — fix the cause and say so in the pull request:
 
 - `npm ci` fails with `EBADDEVENGINES` on Node < 22.18 (`devEngines`).
-- `npm ci` fails when a dependency gains an install script that is not reviewed
-  in `allowScripts` (`.npmrc` sets `strict-allow-scripts`).
+- `npm ci` fails when a dependency gains an install script (`.npmrc` sets
+  `strict-allow-scripts`; the allowlist is empty on purpose).
 - `npm run smoke` fails when the built artifact stops matching the documented
   import styles.
 

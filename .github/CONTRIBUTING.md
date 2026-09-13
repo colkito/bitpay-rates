@@ -83,10 +83,8 @@ Versioning is automated from Conventional Commits:
 
 **No package in the tree runs code at install time.** `.npmrc` sets
 `strict-allow-scripts=true`, so the first dependency that gains an install
-script **fails** `npm ci` instead of running: review it, then add a pinned
-entry to `package.json#allowScripts`. Keeping that list empty is the goal, and
-it is why there is no hook runner — the only one in the tree was also the only
-install script.
+script **fails** `npm ci` instead of running. Review it, then add a pinned
+entry to `package.json#allowScripts`. Keeping that list empty is the goal.
 
 CI additionally runs `npm audit signatures`, which checks every installed
 package against the registry's signature.

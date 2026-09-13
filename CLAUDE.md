@@ -6,4 +6,5 @@ for commands, architecture, tooling, and contribution policy.
 Claude-specific:
 
 - Safe commands are pre-approved in `.claude/settings.json`.
-- Do not request extra permissions for `npm publish`, `git push`, or merging PRs.
+- Pushing a feature branch and opening a PR is allowed. Do not request extra
+  permissions for `npm publish`, merging PRs, or publishing a release.

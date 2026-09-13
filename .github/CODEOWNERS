@@ -13,7 +13,11 @@
 /tsdown.config.mts  @colkito
 /tsconfig.json      @colkito
 /biome.json         @colkito
-/lefthook.yml       @colkito
+
+# Git hooks that run on commit/push, and the installer `npm ci` copies them
+/scripts/git-hooks/              @colkito
+/scripts/guard-protected-refs.sh @colkito
+/scripts/install-git-hooks.mjs   @colkito
 
 # What autonomous agents are told to do, and what they may run unattended
 /AGENTS.md          @colkito

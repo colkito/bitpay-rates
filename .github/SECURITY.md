@@ -25,8 +25,8 @@ keeping it that way:
 - **The tarball is only `dist/`** (plus `package.json`, `README.md`, `LICENSE`).
 - **No publish is unattended.** A human merges the release PR and then publishes
   the draft GitHub Release; that click is what triggers the npm deploy.
-- **Dependency install scripts are allowlisted** in `package.json#allowScripts`
-  with `strict-allow-scripts=true`, so an unreviewed install script fails the
+- **No dependency runs code at install time.** `.npmrc` sets
+  `strict-allow-scripts=true`, so an unreviewed install script fails the
   install instead of running.
 - **GitHub Actions are pinned by commit SHA** and audited by
   [zizmor](https://docs.zizmor.sh/) in CI.

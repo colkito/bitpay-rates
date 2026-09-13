@@ -1,9 +1,6 @@
 // Installs this repo's git hooks. Run from `prepare`, so `npm ci` sets them up.
-//
-// Hand-written rather than managed by a hook runner: there are three small
-// hooks, and the only runner in the tree was also the only dependency that ran
-// code at install time. Node rather than `cp` so it works on Windows. Silent
-// no-op outside a git checkout — installing from a tarball has no .git.
+// Node rather than `cp` so it works on Windows. Silent no-op outside a git
+// checkout — installing from a tarball has no .git.
 
 import { execFileSync } from 'node:child_process';
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
