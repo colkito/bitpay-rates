@@ -1,6 +1,6 @@
 # bitpay-rates
 
-## Available Codes (updated: 2026-09-12)
+## Available Codes (updated: 2026-09-13)
 
 This is the complete list of 194 codes from `GET /rates/BTC`:
 
