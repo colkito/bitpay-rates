@@ -1,0 +1,91 @@
+name: Release Please
+
+# On every push to main, maintain a "release PR" that bumps the version and
+# updates CHANGELOG.md from Conventional Commits. Merging that PR creates a
+# DRAFT GitHub Release with auto-generated notes for human review; publishing
+# the draft triggers npm-publish.yml.
+#
+# Whenever a release PR exists, a follow-up job refreshes CODES.md from the
+# live BitPay API so the tagged release ships with a current code list. It runs
+# on every push to main while the PR is open, so it self-heals if release-please
+# force-pushes its branch and drops the commit.
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      pr: ${{ steps.release.outputs.pr }}
+    steps:
+      # Optional GitHub App (free). Set RELEASE_PLEASE_APP_ID +
+      # RELEASE_PLEASE_APP_PRIVATE_KEY so the release PR triggers CI.
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        if: ${{ vars.RELEASE_PLEASE_APP_ID != '' }}
+        with:
+          app-id: ${{ vars.RELEASE_PLEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          token: ${{ steps.app-token.outputs.token || secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  update-codes:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.pr != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        if: ${{ vars.RELEASE_PLEASE_APP_ID != '' }}
+        with:
+          app-id: ${{ vars.RELEASE_PLEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+          permission-contents: write
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ fromJSON(needs.release-please.outputs.pr).headBranchName }}
+          token: ${{ steps.app-token.outputs.token || secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24
+          # This job holds a contents:write token, so it installs nothing and
+          # restores no cache. `update-codes` has no dependencies: Node strips
+          # the types natively.
+          package-manager-cache: false
+
+      - run: npm run update-codes
+
+      - name: Commit CODES.md if it changed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add CODES.md
+          if git diff --cached --quiet; then
+            echo 'CODES.md unchanged'
+            exit 0
+          fi
+          git commit -m 'docs: refresh CODES.md from BitPay rates'
+          git push

@@ -1,17 +1,14 @@
-# EditorConfig helps developers define and maintain consistent
-# coding styles between different editors and IDEs
+# Editor hints only. Biome (biome.json) is the formatter that CI and the
+# pre-commit hook enforce for .mts/.mjs; keep the two in sync if you change
+# either. This file also covers the files Biome does not format (yml, md).
 # editorconfig.org
 
 root = true
 
 [*]
-
-# Change these settings to your own preference
 indent_style = space
 indent_size = 2
-quote_type = single
-
-# We recommend you to keep these unchanged
+max_line_length = 100
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true

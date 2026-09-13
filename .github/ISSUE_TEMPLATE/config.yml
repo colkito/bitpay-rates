@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/colkito/bitpay-rates/security/advisories/new
+    about: Please report vulnerabilities privately, never as a public issue.
+  - name: Available currency codes
+    url: https://github.com/colkito/bitpay-rates/blob/main/CODES.md
+    about: The full list is regenerated from the live BitPay API on every release.

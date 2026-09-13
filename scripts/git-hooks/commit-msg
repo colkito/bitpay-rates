@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Conventional Commits: release-please derives the version and changelog from
+# the squashed commit, so a non-conventional message means no release.
+head -n1 "$1" | grep -qE '^(feat|fix|chore|ci|docs|test|refactor|perf|style|build|revert)(\([a-z0-9._-]+\))?!?: .+' && exit 0
+
+echo "Commit message must use Conventional Commits (feat:, fix:, chore:, ...)" >&2
+exit 1

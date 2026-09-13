@@ -1,0 +1,25 @@
+# Changes to CI/CD, release config, build tooling, and the agent harness should
+# be reviewed by the maintainer. Advisory unless you enable "require review from
+# Code Owners" on branch protection (available on public GitHub Free; optional).
+
+# Anything that can ship code or hold a token
+/.github/                       @colkito
+/release-please-config.json     @colkito
+/.release-please-manifest.json  @colkito
+/.npmrc                         @colkito
+/package.json                   @colkito
+
+# Build and quality tooling
+/tsdown.config.mts  @colkito
+/tsconfig.json      @colkito
+/biome.json         @colkito
+
+# Git hooks that run on commit/push, and the installer `npm ci` copies them
+/scripts/git-hooks/              @colkito
+/scripts/guard-protected-refs.sh @colkito
+/scripts/install-git-hooks.mjs   @colkito
+
+# What autonomous agents are told to do, and what they may run unattended
+/AGENTS.md          @colkito
+/CLAUDE.md          @colkito
+/.claude/           @colkito

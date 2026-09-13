@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run verify)",
+      "Bash(npm test)",
+      "Bash(npm run test:coverage)",
+      "Bash(node --test:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run format)",
+      "Bash(npm run build)",
+      "Bash(npm run smoke)",
+      "Bash(npm run knip)",
+      "Bash(npm run update-codes)",
+      "Bash(npm ci)",
+      "Bash(npx tsc :*)",
+      "Bash(npx biome :*)",
+      "Bash(npx knip :*)",
+      "Bash(npx tsdown :*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)"
+    ],
+    "deny": [
+      "Bash(npm publish:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh release:*)"
+    ]
+  }
+}

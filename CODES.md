@@ -1,8 +1,8 @@
 # bitpay-rates
 
-## Available Codes
+## Available Codes (updated: 2026-09-12)
 
-This is the complete list of 183 codes:
+This is the complete list of 194 codes from `GET /rates/BTC`:
 
 - BTC (Bitcoin)
 - BCH (Bitcoin Cash)
@@ -21,8 +21,12 @@ This is the complete list of 183 codes:
 - MATIC_e (Matic)
 - MATIC (Matic)
 - ETH_m (Ether)
+- ETH_arb (Ether)
+- ETH_op (Ether)
+- ETH_base (Ether)
 - LTC (Litecoin)
 - XRP (Ripple)
+- SOL (Solana)
 - AED (UAE Dirham)
 - AFN (Afghan Afghani)
 - ALL (Albanian Lek)
@@ -58,8 +62,6 @@ This is the complete list of 183 codes:
 - CUP (Cuban Peso)
 - CVE (Cape Verdean Escudo)
 - CZK (Czech Koruna)
-- DAI (Dai)
-- DAI_m (Dai)
 - DJF (Djiboutian Franc)
 - DKK (Danish Krone)
 - DOGE (Dogecoin)
@@ -168,8 +170,15 @@ This is the complete list of 183 codes:
 - USDC (USDC)
 - USDC_m (USDC.e)
 - USDCn_m (USDC)
+- USDC_arb (USDC)
+- USDC_op (USDC)
+- USDC_base (USDC)
+- USDC_sol (USDC)
 - USDT (Tether)
 - USDT_m (Tether)
+- USDTe_arb (Tether)
+- USDTe_op (Tether)
+- USDT_sol (Tether)
 - PYUSD (PayPal USD)
 - UYU (Uruguayan Peso)
 - UZS (Uzbekistan Som)
@@ -189,3 +198,7 @@ This is the complete list of 183 codes:
 - ZAR (South African Rand)
 - ZMW (Zambian Kwacha)
 - ZWL (Zimbabwean Dollar)
+
+Codes containing `_` (chain-specific variants such as `USDC_arb`) appear in
+this table but BitPay rejects them as a `base` or `quote`, so `get()` cannot
+query them individually.

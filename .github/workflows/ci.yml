@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          # Active LTS, matching .nvmrc and the publish job: the artifact is
+          # built and smoke-tested on the same Node that publishes it.
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Exactly the command contributors and agents run locally, so CI can
+      # never drift from it.
+      - run: npm run verify
+      - run: npm audit --audit-level=high
+      # Every installed package still matches what the registry signed.
+      - run: npm audit signatures
+      # Types across every resolution mode. Kept out of `verify` and out of
+      # devDependencies: it pulls 56 packages and needs network.
+      - run: npx --yes @arethetypeswrong/cli@0.18.5 --pack .
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # 22 = maintenance LTS, 24 = active LTS, 26 = current.
+        # These names become the check names (`test (22)`, …) that branch
+        # protection requires. Changing this list without updating the required
+        # checks leaves one that can never report and blocks every PR.
+        node-version: [22, 24, 26]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        with:
+          advanced-security: false
