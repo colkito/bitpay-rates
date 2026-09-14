@@ -53,7 +53,7 @@ export async function get(query: RateQuery = {}): Promise<RateResponse> {
   try {
     return await readRates(url, AbortSignal.timeout(REQUEST_TIMEOUT_MS), wantsTable);
   } catch (err) {
-    if (err instanceof Error && (err.name === 'TimeoutError' || err.name === 'AbortError')) {
+    if (isTimeout(err)) {
       throw new Error(`Request to ${url} timed out after ${REQUEST_TIMEOUT_MS}ms`);
     }
     throw err;
@@ -112,6 +112,12 @@ async function readRates(
   }
 
   return data as RateResponse;
+}
+
+function isTimeout(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  if (err.name === 'TimeoutError') return true;
+  return err.cause instanceof Error && err.cause.name === 'TimeoutError';
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

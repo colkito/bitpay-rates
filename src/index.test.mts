@@ -207,6 +207,15 @@ describe('get', { concurrency: false }, () => {
 
     await assert.rejects(get(), /timed out after 10000ms/);
   });
+
+  it('does not label a non-timeout abort as a timeout', async () => {
+    stubFetch(() => Promise.reject(new DOMException('connection reset', 'AbortError')));
+
+    await assert.rejects(get(), (err: unknown) => {
+      assert.equal(err instanceof Error && /timed out/.test(err.message), false);
+      return err instanceof DOMException && err.name === 'AbortError';
+    });
+  });
 });
 
 describe('exports', () => {

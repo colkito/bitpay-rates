@@ -20,7 +20,7 @@ body:
     id: node
     attributes:
       label: Node.js version
-      description: Run `node -v`. This package requires Node >= 22.
+      description: Run `node -v`. This package requires Node >= 22.12.
       placeholder: v24.21.0
     validations:
       required: true

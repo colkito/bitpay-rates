@@ -7,16 +7,13 @@
  */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
-// Resolved at runtime rather than as a literal specifier: dist/ does not exist
-// on a clean checkout, and `tsc --noEmit` runs before the build.
-const dist = (file: string) => new URL(`../dist/${file}`, import.meta.url);
-
-const esm = await import(dist('index.mjs').href);
-const cjs = require(fileURLToPath(dist('index.mjs')));
+// Resolve through package.json#exports (self-reference), not a dist/ path, so a
+// broken exports map fails this script the same way it would fail a consumer.
+const esm = await import('bitpay-rates');
+const cjs = require('bitpay-rates');
 
 const checks: [string, unknown][] = [
   ["ESM  import { get } from 'bitpay-rates'", esm.get],

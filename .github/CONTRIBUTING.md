@@ -17,7 +17,7 @@ All changes land through pull requests:
    changelog from them.
 3. CI (`.github/workflows/ci.yml`) must pass: a `quality` job (`npm run verify`,
    plus the network-dependent checks `npm audit`, `npm audit signatures` and
-   `@arethetypeswrong/cli`), a `test` job across Node 22/24/26, and a
+   `@arethetypeswrong/cli --profile esm-only`), a `test` job across Node 22/24/26, and a
    `workflows` job (zizmor, no GitHub code scanning).
 4. A **human** reviews and merges. Merging is the human authorization step.
 
