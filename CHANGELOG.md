@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/colkito/bitpay-rates/compare/v3.0.0...v3.1.0) (2026-09-14)
+
+
+### Features
+
+* ship a single ESM build for Node 22.12+ ([#288](https://github.com/colkito/bitpay-rates/issues/288)) ([4a4166e](https://github.com/colkito/bitpay-rates/commit/4a4166e1088ff987a3ccf8a021440f452f8300be))
+
 ## [3.0.0](https://github.com/colkito/bitpay-rates/compare/v2.0.0...v3.0.0) (2026-09-13)
 
 
