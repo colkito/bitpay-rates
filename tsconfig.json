@@ -13,5 +13,6 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/**/*.mts", "scripts/**/*.mts", "tsdown.config.mts"]
+  "include": ["src/**/*.mts", "scripts/**/*.mts", "tsdown.config.mts"],
+  "exclude": ["scripts/smoke.mts"]
 }

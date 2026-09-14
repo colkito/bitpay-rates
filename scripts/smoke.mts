@@ -2,27 +2,24 @@
  * Packaging smoke test: asserts that the built artifact in dist/ really exposes
  * every import style the README documents. Type checks and unit tests run
  * against src/, so only this catches a broken `exports` map, a wrong default
- * export shape, or a bad dual ESM/CJS build. Runs in CI after the build and
+ * export shape, or a bad ESM build. Runs in CI after the build and
  * again from `prepublishOnly`, so a broken artifact cannot be published.
  */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 
-// Resolved at runtime rather than as a literal specifier: dist/ does not exist
-// on a clean checkout, and `tsc --noEmit` runs before the build.
-const dist = (file: string) => new URL(`../dist/${file}`, import.meta.url);
-
-const esm = await import(dist('index.mjs').href);
-const cjs = require(fileURLToPath(dist('index.cjs')));
+// Resolve through package.json#exports (self-reference), not a dist/ path, so a
+// broken exports map fails this script the same way it would fail a consumer.
+const esm = await import('bitpay-rates');
+const cjs = require('bitpay-rates');
 
 const checks: [string, unknown][] = [
   ["ESM  import { get } from 'bitpay-rates'", esm.get],
   ['ESM  import bitpayRates … bitpayRates.get()', esm.default?.get],
   ["CJS  const { get } = require('bitpay-rates')", cjs.get],
-  ['CJS  const bitpayRates = require(…) … bitpayRates.get()', cjs.default?.get],
+  ['CJS  const bitpayRates = require(…) … bitpayRates.get()', cjs.get],
 ];
 
 for (const [style, value] of checks) {
@@ -31,7 +28,8 @@ for (const [style, value] of checks) {
 }
 
 assert.equal(esm.get, esm.default?.get, 'ESM named and default export disagree');
-assert.equal(cjs.get, cjs.default?.get, 'CJS named and default export disagree');
+assert.equal(cjs.get, esm.get, 'require(esm) named export disagrees with import');
+assert.equal(typeof cjs.default?.get, 'function', 'require(esm) namespace has default.get');
 
 // The default export must stay a namespace object. Reverting it to the bare
 // function would silently break `bitpayRates.get()` in ESM.

@@ -38,7 +38,9 @@ jobs:
       - run: npm audit signatures
       # Types across every resolution mode. Kept out of `verify` and out of
       # devDependencies: it pulls 56 packages and needs network.
-      - run: npx --yes @arethetypeswrong/cli@0.18.5 --pack .
+      # ESM-only: attw's node16-cjs cell still flags require(esm), which Node
+      # 22.12+ supports. The esm-only profile keeps the resolutions that matter.
+      - run: npx --yes @arethetypeswrong/cli@0.18.5 --pack . --profile esm-only
 
   test:
     runs-on: ubuntu-latest
@@ -47,7 +49,7 @@ jobs:
       NPM_CONFIG_UPDATE_NOTIFIER: 'false'
     strategy:
       matrix:
-        # 22 = maintenance LTS, 24 = active LTS, 26 = current.
+        # 22 = maintenance LTS (>=22.12 for require(esm)), 24 = active LTS, 26 = current.
         # These names become the check names (`test (22)`, …) that branch
         # protection requires. Changing this list without updating the required
         # checks leaves one that can never report and blocks every PR.

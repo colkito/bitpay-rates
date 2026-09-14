@@ -50,22 +50,13 @@ export async function get(query: RateQuery = {}): Promise<RateResponse> {
     ? `${BITPAY_RATES}/${base}`
     : `${BITPAY_RATES}/${base}/${normalizeCode(quote, 'quote')}`;
 
-  const controller = new AbortController();
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(() => {
-      const err = new Error(`Request to ${url} timed out after ${REQUEST_TIMEOUT_MS}ms`);
-      controller.abort(err);
-      reject(err);
-    }, REQUEST_TIMEOUT_MS);
-  });
-
   try {
-    // Promise.race subscribes to both, so the aborted fetch's later rejection is
-    // handled and discarded rather than surfacing as an unhandled rejection.
-    return await Promise.race([readRates(url, controller.signal, wantsTable), timeout]);
-  } finally {
-    if (timeoutId !== undefined) clearTimeout(timeoutId);
+    return await readRates(url, AbortSignal.timeout(REQUEST_TIMEOUT_MS), wantsTable);
+  } catch (err) {
+    if (isTimeout(err)) {
+      throw new Error(`Request to ${url} timed out after ${REQUEST_TIMEOUT_MS}ms`);
+    }
+    throw err;
   }
 }
 
@@ -123,6 +114,12 @@ async function readRates(
   return data as RateResponse;
 }
 
+function isTimeout(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  if (err.name === 'TimeoutError') return true;
+  return err.cause instanceof Error && err.cause.name === 'TimeoutError';
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
@@ -141,8 +138,7 @@ function isRateObj(value: unknown): value is RateObj {
 }
 
 /**
- * Namespace object, so both import styles work in ESM and CommonJS:
- * `import { get }` / `const { get } = require(...)`, and
- * `import bitpayRates` / `const bitpayRates = require(...)` + `bitpayRates.get()`.
+ * Namespace object, so `import bitpayRates` / `require(...)` + `.get()` works
+ * the same as the named export.
  */
 export default { get };

@@ -1,19 +1,18 @@
 # bitpay-rates
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/ci.yml?style=flat-square)
+[![CI](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/ci.yml?style=flat-square&label=CI)](https://github.com/colkito/bitpay-rates/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/bitpay-rates.svg?style=flat-square)](https://www.npmjs.com/package/bitpay-rates)
-[![BundlePhobia](https://img.shields.io/bundlephobia/min/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
-[![BundlePhobia](https://img.shields.io/bundlephobia/minzip/bitpay-rates.svg?style=flat-square)](https://bundlephobia.com/result?p=bitpay-rates)
 
 A lightweight Node.js wrapper for [BitPay exchange rates](https://www.bitpay.com/exchange-rates), written in TypeScript.
 
-Zero runtime dependencies, promise-based, dual ESM + CommonJS. Talks to the
-official public [Rates API](https://developer.bitpay.com/reference/rates)
+Zero runtime dependencies, promise-based, ESM (and `require()` on Node 22.12+).
+Talks to the official public
+[Rates API](https://developer.bitpay.com/reference/rates)
 (`X-Accept-Version: 2.0.0`).
 
 ## Requirements
 
-- Node.js >= 22
+- Node.js >= 22.12
 
 ```bash
 npm install bitpay-rates
@@ -28,11 +27,14 @@ npm install bitpay-rates
   `get({ base: 'ETH', quote: 'USD' })`.
 - `get({ base })` returns the **whole table** for that base, which v2 could not
   express. `get({ quote })` returns that one rate against BTC.
-- Dual ESM + CJS with an `exports` map (`import` and `require` both work).
-- Node.js >= 22.
+- Dual ESM + CJS (the CJS file is gone in 3.1 — see below).
+- Node.js >= 22 (3.1 requires >= 22.12).
 - Requests time out after 10 seconds.
 - Currency codes are validated (`/^[A-Z0-9]{2,10}$/`); anything else rejects
   with a `TypeError` before a request is made.
+
+v3.1 ships a **single ESM file**. `require('bitpay-rates')` still works on
+Node 22.12+ (`require(esm)`). Node 22.0–22.11 need `import` or an upgrade.
 
 ## Usage
 

@@ -23,6 +23,9 @@ function stubFetch(handler: FetchHandler): { url: string; init?: RequestInit }[]
     async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
       const url = String(input);
       calls.push({ url, init });
+      if (init?.signal?.aborted) {
+        throw init.signal.reason ?? new DOMException('Aborted', 'AbortError');
+      }
       return handler(url, init);
     },
   );
@@ -197,13 +200,21 @@ describe('get', { concurrency: false }, () => {
   });
 
   it('rejects when the request times out', async () => {
-    mock.timers.enable({ apis: ['setTimeout'] });
+    mock.method(AbortSignal, 'timeout', () =>
+      AbortSignal.abort(new DOMException('The operation timed out', 'TimeoutError')),
+    );
     stubFetch(() => new Promise(() => {}));
 
-    const pending = get();
-    mock.timers.tick(10_000);
+    await assert.rejects(get(), /timed out after 10000ms/);
+  });
 
-    await assert.rejects(pending, /timed out after 10000ms/);
+  it('does not label a non-timeout abort as a timeout', async () => {
+    stubFetch(() => Promise.reject(new DOMException('connection reset', 'AbortError')));
+
+    await assert.rejects(get(), (err: unknown) => {
+      assert.equal(err instanceof Error && /timed out/.test(err.message), false);
+      return err instanceof DOMException && err.name === 'AbortError';
+    });
   });
 });
 

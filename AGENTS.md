@@ -10,8 +10,8 @@ point here.
 - **Develop** on Node **>= 22.18** (`package.json#devEngines` — `npm ci` fails
   with `EBADDEVENGINES` below that). `.nvmrc`, the `quality` job and the
   publish job pin **24**.
-- **Consumers** need Node >= 22 (`package.json#engines`). Tests run on 22, 24
-  and 26.
+- **Consumers** need Node >= 22.12 (`package.json#engines`, for `require(esm)`).
+  Tests run on 22, 24 and 26.
 - Keep `@types/node` on the **22.x** line (oldest supported Node, not the one
   we develop on).
 
@@ -88,14 +88,15 @@ Docs: https://developer.bitpay.com/reference/rates
 - **Lint / format**: Biome. **Tests**: `node:test`. Mock `globalThis.fetch`.
   Reset with `mock.reset()` — `restoreAll()` leaves fake timers on and hangs
   the next test. Never hit the live API.
-- **Build**: tsdown → minified `dist/index.mjs` + `dist/index.cjs` and matching
-  `.d.mts` / `.d.cts`. The npm tarball is **only `dist/`** (plus README /
-  LICENSE / package.json). Do not add files to `package.json#files`.
+- **Build**: tsdown → minified `dist/index.mjs` + `dist/index.d.mts`. One ESM
+  file; Node 22.12+ can `require()` it. The npm tarball is **only `dist/`**
+  (plus README / LICENSE / package.json). Do not add files to
+  `package.json#files`.
 - **Git hooks** (`scripts/git-hooks/`, installed by `npm ci`): Biome on staged
   files, Conventional Commits, refuse push to `main`.
 - **knip** for dead code. **attw** in CI only (not a devDependency, not in
   `verify`). If you touch `exports` / `main` / `types`, run
-  `npx --yes @arethetypeswrong/cli@0.18.5 --pack .`
+  `npx --yes @arethetypeswrong/cli@0.18.5 --pack . --profile esm-only`
 - **Install scripts**: none. `.npmrc` has `strict-allow-scripts=true`, so a new
   one fails `npm ci`. Keep `package.json#allowScripts` empty.
 
