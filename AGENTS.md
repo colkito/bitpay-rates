@@ -40,7 +40,7 @@ Do not edit `dist/` or `package-lock.json` by hand; run `npm ci`. Adding a
 dependency needs human approval first, then
 `npm install --save-exact --save-dev <pkg>@<version>`.
 
-`prepare` installs the git hooks and is a no-op outside a git checkout.
+`prepare` installs the git hooks and is a no-op in CI and outside a git checkout.
 
 ## Architecture
 

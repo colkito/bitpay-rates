@@ -1,10 +1,12 @@
 // Installs this repo's git hooks. Run from `prepare`, so `npm ci` sets them up.
-// Node rather than `cp` so it works on Windows. Silent no-op outside a git
-// checkout — installing from a tarball has no .git.
+// Node rather than `cp` so it works on Windows. Silent no-op in CI (Actions
+// always sets CI=true) and outside a git checkout (a tarball has no .git).
 
 import { execFileSync } from 'node:child_process';
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+
+if (process.env.CI) process.exit(0);
 
 let gitDir;
 try {
