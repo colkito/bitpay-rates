@@ -28,9 +28,9 @@ All changes land through pull requests:
   `test (24)`, `test (26)`, `workflows`. **The matrix leg names are part of the
   check names**, so changing the Node matrix in `ci.yml` without updating this
   list leaves a required check that can never report and blocks every PR.
-- Everything runs on Node >= 22: tsdown's CLI requires `^22.18 || ^24.11 || >=26`
-  and the tests rely on native TypeScript type stripping (22.18+). Node 20 is
-  end-of-life, so it is neither supported nor tested. The matrix covers 22
+- Consumers need Node >= 22.12 (`require(esm)`). Contributors need >= 22.18:
+  tsdown's CLI requires `^22.18 || ^24.11 || >=26` and the tests rely on native
+  TypeScript type stripping. Node 20 is end-of-life. The matrix covers 22
   (maintenance LTS), 24 (active LTS) and 26 (current); `.nvmrc`, the `quality`
   job and the publish job all use 24. `package.json#devEngines` makes `npm ci`
   fail outright on anything below 22.18.

@@ -7,13 +7,14 @@
 
 A lightweight Node.js wrapper for [BitPay exchange rates](https://www.bitpay.com/exchange-rates), written in TypeScript.
 
-Zero runtime dependencies, promise-based, dual ESM + CommonJS. Talks to the
-official public [Rates API](https://developer.bitpay.com/reference/rates)
+Zero runtime dependencies, promise-based, ESM (and `require()` on Node 22.12+).
+Talks to the official public
+[Rates API](https://developer.bitpay.com/reference/rates)
 (`X-Accept-Version: 2.0.0`).
 
 ## Requirements
 
-- Node.js >= 22
+- Node.js >= 22.12
 
 ```bash
 npm install bitpay-rates
@@ -30,6 +31,9 @@ npm install bitpay-rates
   express. `get({ quote })` returns that one rate against BTC.
 - Dual ESM + CJS with an `exports` map (`import` and `require` both work).
 - Node.js >= 22.
+
+v3.1 ships a **single ESM file**. `require('bitpay-rates')` still works on
+Node 22.12+ (`require(esm)`). Node 22.0–22.11 need `import` or an upgrade.
 - Requests time out after 10 seconds.
 - Currency codes are validated (`/^[A-Z0-9]{2,10}$/`); anything else rejects
   with a `TypeError` before a request is made.
