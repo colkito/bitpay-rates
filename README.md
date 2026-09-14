@@ -2,6 +2,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/colkito/bitpay-rates/ci.yml?style=flat-square&label=CI)](https://github.com/colkito/bitpay-rates/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/bitpay-rates.svg?style=flat-square)](https://www.npmjs.com/package/bitpay-rates)
+[![unpacked size](https://img.shields.io/npm/unpacked-size/bitpay-rates.svg?style=flat-square)](https://www.npmjs.com/package/bitpay-rates)
 
 A lightweight Node.js wrapper for [BitPay exchange rates](https://www.bitpay.com/exchange-rates), written in TypeScript.
 
